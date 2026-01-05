@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 15px;">
+        <div class="card-body">
+            <h2 class="text-center mb-4 fw-bold text-primary">🔐 Iniciar Sesión</h2>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">Nombre de usuario</label>
+                    <input type="text" name="username" class="form-control" autofocus required id="id_username">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">Contraseña</label>
+                    <input type="password" name="password" class="form-control" required id="id_password">
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold">Entrar</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <span class="text-muted">¿No tienes cuenta?</span>
+                <a href="{% url 'signup' %}" class="text-decoration-none fw-bold">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 15px;">
+        <div class="card-body">
+            <h2 class="text-center mb-4 fw-bold text-primary">🚀 Crear Cuenta</h2>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold">Registrarse</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                <span class="text-muted">¿Ya tienes cuenta?</span>
+                <a href="{% url 'login' %}" class="text-decoration-none fw-bold">Inicia Sesión aquí</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,3 @@
+﻿L88:             <li class="page-item"><a class="page-link text-dark border-0" href="?q={{ busqueda }}&page={{ resultados.previous_page_number }}">&#128072; Anterior</a></li>
+L90:             <li class="page-item active"><span class="page-link bg-primary border-0 fw-bold px-4">{{ resultados.number }} de {{ resultados.paginator.num_pages }}</span></li>
+L92:             <li class="page-item"><a class="page-link text-dark border-0" href="?q={{ busqueda }}&page={{ resultados.next_page_number }}">Siguiente &#128073;</a></li>
