@@ -90,7 +90,7 @@ def buscar_amazon_por_api(nombre_producto):
         for item in response.json().get("data", {}).get("products", [])[:LIMITE_PRODUCTOS]:
             precio = item.get("product_price")
             if not precio: continue
-            precio_limpio = str(precio).replace("€", "").strip() + " EUR"
+            precio_limpio = str(precio).replace("€", "").replace(".", "").strip() + " EUR"
             estrellas = item.get("product_star_rating")
             votos = item.get("product_num_ratings")
             if estrellas and votos: valoracion = f"⭐ {estrellas} ({votos} val.)"
@@ -140,7 +140,17 @@ def buscar_amazon_por_robot(nombre_producto):
                 h2 = p.find('h2')
                 if not h2: continue
                 price_whole = p.find('span', class_='a-price-whole')
-                precio = f"{price_whole.text.replace(',', '').replace('.', '')} EUR" if price_whole else "Consultar"
+                price_fraction = p.find('span', class_='a-price-fraction')
+                if price_whole:
+                    # Quitamos todos los puntos para que sea "1279" en vez de "1.279"
+                    whole = price_whole.text.strip().replace('.', '')
+                    fraction = price_fraction.text.strip() if price_fraction else "00"
+                    # El usuario pide que si no funciona nada, le quitemos el punto al precio de amazon.
+                    # Ya quitamos el punto de los miles arriba con replace('.', '')
+                    # Y separamos la parte fraccional con un PUNTO en lugar de COMA para garantizar compatibilidad total
+                    precio = f"{whole}.{fraction} EUR"
+                else:
+                    precio = "Consultar"
                 val = p.find('span', class_='a-icon-alt')
                 valoracion = f"⭐ {val.text.split()[0]}" if val else "Sin opiniones"
                 link_tag = p.find('a', class_='a-link-normal')
@@ -183,7 +193,8 @@ def buscar_en_wallapop(nombre_producto):
             link = f"https://es.wallapop.com{item['href']}"
             if link in seen: continue
             seen.add(link)
-            m = re.search(r'(\d+([.,]\d{1,2})?)\s?€', item.get_text(" ", strip=True))
+            # Buscamos algo que parezca un precio: números con puntos/comas seguidos de €
+            m = re.search(r'([\d.,]+)\s?€', item.get_text(" ", strip=True))
             precio = f"{m.group(1)} EUR" if m else "Consultar"
             
             img_tag = item.find('img')

@@ -1,25 +1,4 @@
-import requests
-from bs4 import BeautifulSoup
 import re
-
-def get_soup(url):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept-Language": "es-ES,es;q=0.9",
-        "Referer": "https://www.google.com/", # Simulamos que venimos de buscar en Google
-    }
-    
-    try:
-        # Añadimos un pequeño retraso para no parecer tan bot
-        response = requests.get(url, headers=headers, timeout=15)
-        if response.status_code == 200:
-            return BeautifulSoup(response.text, 'html.parser')
-        else:
-            print(f"Error de estado: {response.status_code}")
-            return None
-    except Exception as e:
-        print(f"Error de conexión: {e}")
-        return None
 
 def extraer_precio(item):
     precio_str = str(item.get('precio', 'Consultar'))
@@ -35,7 +14,7 @@ def extraer_precio(item):
     # 1.200,50 -> Si hay ambos, el último es el decimal
     if '.' in numeros and ',' in numeros:
         if numeros.rfind(',') > numeros.rfind('.'):
-            # Formato 1.200,50 o 1.200.000,50
+            # Formato 1.200,50
             numeros = numeros.replace('.', '').replace(',', '.')
         else:
             # Formato 1,200.50
@@ -48,8 +27,8 @@ def extraer_precio(item):
             numeros = numeros.replace('.', '')
         else:
             partes = numeros.split('.')
-            # Si después del último punto hay exactamente 3 dígitos, son miles (ej: 1.200 o 1.000.000)
-            if len(partes[-1]) == 3:
+            # Si después del punto hay exactamente 3 dígitos, es probable que sea miles (ej: 1.200)
+            if len(partes[1]) == 3:
                 numeros = numeros.replace('.', '')
             else:
                 # Caso ej: 12.50 -> decimal
@@ -72,3 +51,29 @@ def extraer_precio(item):
         return float(numeros)
     except: 
         return 999999.0
+
+def test():
+    cases = [
+        ("1.279,00 EUR", 1279.0),
+        ("1.359,00 EUR", 1359.0),
+        ("1.200 EUR", 1200.0),
+        ("1.200,50 EUR", 1200.5),
+        ("1,200.50 EUR", 1200.5),
+        ("9,99 EUR", 9.99),
+        ("12.50 EUR", 12.5),
+        ("1.200 €", 1200.0),
+        ("1200 €", 1200.0),
+        ("1.000.000 €", 1000000.0),
+    ]
+
+    for input_str, expected in cases:
+        item = {'precio': input_str}
+        result = extraer_precio(item)
+        print(f"Input: {input_str} => Result: {result} (Expected: {expected})")
+        if result != expected:
+            print(f"  ❌ FAILED: {result} != {expected}")
+        else:
+            print(f"  ✅ PASSED")
+
+if __name__ == "__main__":
+    test()

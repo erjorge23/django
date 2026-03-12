@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.core.paginator import Paginator
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
@@ -74,10 +73,12 @@ def home(request):
             
             cache.set(cache_key, resultados_finales, 600)
 
-    paginator = Paginator(resultados_finales, 21)
-    page_obj = paginator.get_page(request.GET.get('page'))
-
-    return render(request, 'buscar.html', {'form': form, 'resultados': page_obj, 'busqueda': busqueda})
+    return render(request, 'buscar.html', {
+        'form': form,
+        'resultados': resultados_finales,
+        'busqueda': busqueda,
+        'total': len(resultados_finales)
+    })
 
 def api_get_wallapop_stars(request):
     url = request.GET.get('url')
