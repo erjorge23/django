@@ -4,9 +4,13 @@ from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import BusquedaProductoForm, RegistroForm
-from .models import Producto
+from .models import Producto, Favorito
 from .scrapers import buscar_en_ebay, buscar_en_amazon, buscar_en_wallapop, obtener_estrellas_wallapop, buscar_en_aliexpress
 from .scraper_utils import extraer_precio
+
+import re
+import json
+from django.views.decorators.http import require_POST
 
 import re
 import concurrent.futures
@@ -72,12 +76,17 @@ def home(request):
                     print(f"Error guardando en BD: {e}")
             
             cache.set(cache_key, resultados_finales, 600)
+            
+        favoritos_links = []
+        if request.user.is_authenticated:
+            favoritos_links = list(Favorito.objects.filter(user=request.user).values_list('producto__link', flat=True))
 
     return render(request, 'buscar.html', {
         'form': form,
         'resultados': resultados_finales,
         'busqueda': busqueda,
-        'total': len(resultados_finales)
+        'total': len(resultados_finales),
+        'favoritos_links': favoritos_links if busqueda else []
     })
 
 def api_get_wallapop_stars(request):
@@ -90,3 +99,30 @@ def api_get_wallapop_stars(request):
         stars = obtener_estrellas_wallapop(url)
         cache.set(key, stars, 3600)
     return JsonResponse({'stars': stars})
+@login_required(login_url='login')
+@require_POST
+def toggle_favorito(request):
+    try:
+        data = json.loads(request.body)
+        link = data.get('link')
+        if not link:
+            return JsonResponse({'status': 'error', 'message': 'Falta el enlace'}, status=400)
+            
+        producto = Producto.objects.filter(link=link).first()
+        if not producto:
+            return JsonResponse({'status': 'error', 'message': 'Producto no encontrado'}, status=404)
+            
+        fav, created = Favorito.objects.get_or_create(user=request.user, producto=producto)
+        
+        if not created:
+            fav.delete()
+            return JsonResponse({'status': 'removed'})
+        else:
+            return JsonResponse({'status': 'added'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@login_required(login_url='login')
+def lista_favoritos(request):
+    favoritos = Favorito.objects.filter(user=request.user).select_related('producto').order_by('-fecha_agregado')
+    return render(request, 'favoritos.html', {'favoritos': favoritos})

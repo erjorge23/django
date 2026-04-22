@@ -2,66 +2,87 @@
 {% block content %}
 
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
+    /* Eliminamos body porque ya está en base.html */
 
     .search-hero {
-        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-        border-radius: 1rem;
+        background: radial-gradient(circle at top left, #4f46e5 0%, #3b82f6 100%);
+        border-radius: 1.5rem;
         color: white;
-        padding: 3rem 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        padding: 4rem 2rem;
+        margin-top: 1rem;
+        margin-bottom: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3);
+    }
+
+    .search-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        pointer-events: none;
     }
 
     .search-input {
         border-radius: 50px 0 0 50px !important;
-        padding: 1.2rem 1.5rem;
+        padding: 1.25rem 1.75rem;
         border: none;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+    }
+
+    .search-input:focus {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        outline: none;
     }
 
     .search-btn {
         border-radius: 0 50px 50px 0 !important;
-        padding: 1.2rem 2.5rem;
-        font-weight: bold;
-        background-color: #1e40af;
+        padding: 1.25rem 2.5rem;
+        font-weight: 700;
+        background-color: #1e1b4b;
         border: none;
-        transition: background-color 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(30, 27, 75, 0.2) !important;
     }
 
     .search-btn:hover {
-        background-color: #1e3a8a;
+        background-color: #312e81;
+        transform: translateY(-1px);
     }
 
     /* Panel de filtros */
     .filtros-panel {
-        background: white;
-        border-radius: 1rem;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        margin-bottom: 1.5rem;
-        border: 1px solid #e2e8f0;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 1.25rem;
+        padding: 1.75rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
     .filtros-panel h6 {
         font-weight: 700;
-        color: #374151;
-        margin-bottom: 0.75rem;
+        color: #475569;
+        margin-bottom: 1rem;
         font-size: 0.85rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.1em;
     }
 
     .store-check {
         cursor: pointer;
         user-select: none;
+        font-weight: 500;
+        color: #334155;
+        transition: color 0.2s;
     }
-
-    .store-check input {
-        cursor: pointer;
-    }
+    
+    .store-check:hover { color: #0f172a; }
 
     .price-inputs {
         display: flex;
@@ -70,93 +91,104 @@
     }
 
     .price-inputs input {
-        width: 90px;
-        font-size: 0.9rem;
+        width: 100px;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem;
+        transition: all 0.2s;
     }
+    .price-inputs input:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
 
     .sort-select {
-        font-size: 0.9rem;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 0.45rem 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
         cursor: pointer;
         width: 100%;
+        color: #334155;
+        background-color: white;
+        transition: all 0.2s;
     }
+    .sort-select:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
 
     .btn-reset-filtros {
-        font-size: 0.8rem;
-        color: #6b7280;
-        background: none;
+        font-size: 0.85rem;
+        color: #64748b;
+        background: rgba(241, 245, 249, 0.8);
         border: none;
         cursor: pointer;
-        padding: 0;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        transition: all 0.2s;
     }
 
     .btn-reset-filtros:hover {
+        background: #fee2e2;
         color: #ef4444;
-        text-decoration: underline;
     }
 
     /* Badges de tiendas */
     .store-badge {
-        font-weight: 600;
-        padding: 0.4em 0.8em;
-        border-radius: 6px;
-        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.45em 0.9em;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .bg-amazon {
-        background-color: #ff9900;
-        color: #111;
-    }
-
-    .bg-ebay {
-        background-color: #0064d2;
-        color: white;
-    }
-
-    .bg-wallapop {
-        background-color: #13c1ac;
-        color: white;
-    }
-
-    .bg-aliexpress {
-        background-color: #e74c3c;
-        color: white;
-    }
+    .bg-amazon { background-color: #f59e0b; color: white; }
+    .bg-ebay { background-color: #2563eb; color: white; }
+    .bg-wallapop { background-color: #10b981; color: white; }
+    .bg-aliexpress { background-color: #ef4444; color: white; }
 
     /* Tarjetas */
     .product-card {
-        border-radius: 1rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 1.25rem;
+        border: none;
+        background: white;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     }
 
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
     }
 
     .card-img-container {
-        height: 200px;
-        background-color: white;
+        height: 220px;
+        background-color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
+        padding: 1.5rem;
         border-bottom: 1px solid #f1f5f9;
+        position: relative;
     }
 
     .card-img-container img {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
+        transition: transform 0.4s ease;
+    }
+    .product-card:hover .card-img-container img {
+        transform: scale(1.05);
     }
 
     .price-tag {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         font-weight: 800;
-        color: #10b981;
+        color: #0f172a;
+        letter-spacing: -0.5px;
     }
 
     .truncate-text-2-lines {
@@ -167,17 +199,32 @@
         overflow: hidden;
         text-overflow: ellipsis;
         min-height: 48px;
+        color: #1e293b;
+        line-height: 1.4;
+    }
+
+    .btn-ver-oferta {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    .btn-ver-oferta:hover {
+        background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 15px rgba(15, 23, 42, 0.2);
     }
 
     /* Resultado vacío por filtros */
-    .no-results-filter {
-        display: none;
-    }
+    .no-results-filter { display: none; }
 
     /* Contador visible */
     #contador-resultados {
         font-size: 0.9rem;
-        color: #6b7280;
+        font-weight: 600;
+        background: #e2e8f0;
+        color: #475569;
     }
 </style>
 
@@ -268,15 +315,25 @@
                     <img src="{{ item.imagen }}" alt="Foto" loading="lazy">
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <div class="mb-2">
-                        {% if item.tienda == 'Amazon' %}
-                        <span class="badge store-badge bg-amazon">Amazon</span>
-                        {% elif item.tienda == 'eBay' %}
-                        <span class="badge store-badge bg-ebay">eBay</span>
-                        {% elif item.tienda == 'AliExpress' %}
-                        <span class="badge store-badge bg-aliexpress">AliExpress</span>
-                        {% else %}
-                        <span class="badge store-badge bg-wallapop">Wallapop</span>
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            {% if item.tienda == 'Amazon' %}
+                            <span class="badge store-badge bg-amazon">Amazon</span>
+                            {% elif item.tienda == 'eBay' %}
+                            <span class="badge store-badge bg-ebay">eBay</span>
+                            {% elif item.tienda == 'AliExpress' %}
+                            <span class="badge store-badge bg-aliexpress">AliExpress</span>
+                            {% else %}
+                            <span class="badge store-badge bg-wallapop">Wallapop</span>
+                            {% endif %}
+                        </div>
+                        {% if user.is_authenticated %}
+                        <button class="btn btn-light rounded-circle shadow-sm btn-favorito p-0" 
+                                data-link="{{ item.link }}" 
+                                style="width: 35px; height: 35px; border: 1px solid #e2e8f0; color: {% if item.link in favoritos_links %}#ef4444{% else %}#cbd5e1{% endif %}; font-size: 1.2rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;"
+                                title="Favorito">
+                            &#10084;
+                        </button>
                         {% endif %}
                     </div>
                     <h5 class="card-title text-dark fw-bold truncate-text-2-lines" title="{{ item.nombre }}">{{ item.nombre }}</h5>
@@ -292,7 +349,7 @@
                             {% endif %}
                         </div>
                         <a href="{{ item.link }}" target="_blank"
-                            class="btn btn-dark w-100 rounded-pill fw-bold shadow-sm py-2">Ver Oferta &#128279;</a>
+                            class="btn btn-ver-oferta w-100 rounded-pill py-2">Ver Oferta &#128279;</a>
                     </div>
                 </div>
             </div>
@@ -321,8 +378,16 @@
         <h1 style="font-size: 5rem; opacity: 0.9;">&#128717;</h1>
         <h2 class="fw-bold mt-3 text-dark">&#191;Qu&#233; necesitas comprar hoy?</h2>
         <p class="text-muted fs-5">Escribe el nombre de un producto arriba y encontraremos el precio m&#225;s bajo.</p>
-    </div>
     {% endif %}
+</div>
+
+<!-- Toast Notificación -->
+<div id="toast-favorito" class="toast align-items-center text-white border-0 position-fixed top-0 end-0 m-4 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 9999; display: none; min-width: 250px;">
+  <div class="d-flex">
+    <div class="toast-body fs-6 fw-bold text-center w-100" id="toast-favorito-msj">
+      ¡Añadido a favoritos!
+    </div>
+  </div>
 </div>
 
 <script>
@@ -438,6 +503,60 @@
                 }
             }
         }
+    });
+    // =================== FAVORITOS ===================
+    const csrfToken = '{{ csrf_token }}'; // Django template tag
+    document.querySelectorAll('.btn-favorito').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const link = this.dataset.link;
+            const originalColor = this.style.color;
+            
+            // Optimistic UI
+            const isAdded = originalColor.includes('rgb(239, 68, 68)') || originalColor.includes('#ef4444');
+            this.style.color = isAdded ? '#cbd5e1' : '#ef4444';
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => this.style.transform = 'scale(1)', 200);
+            
+            try {
+                const response = await fetch('/favoritos/toggle/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({link: link})
+                });
+                const data = await response.json();
+                
+                function mostrarToast(mensaje, bgColor) {
+                    const toastEl = document.getElementById('toast-favorito');
+                    const toastMsj = document.getElementById('toast-favorito-msj');
+                    toastEl.className = `toast align-items-center text-white border-0 position-fixed bottom-0 end-0 m-4 shadow-lg ${bgColor}`;
+                    toastMsj.innerHTML = mensaje;
+                    toastEl.style.display = 'block';
+                    toastEl.classList.add('show');
+                    setTimeout(() => {
+                        toastEl.classList.remove('show');
+                        setTimeout(() => toastEl.style.display = 'none', 300);
+                    }, 3000);
+                }
+
+                if(data.status === 'added') {
+                    this.style.color = '#ef4444';
+                    mostrarToast("❤️ Guardado en tus Favoritos", "bg-success");
+                } else if(data.status === 'removed') {
+                    this.style.color = '#cbd5e1';
+                    mostrarToast("💔 Eliminado de tus Favoritos", "bg-secondary");
+                } else {
+                    this.style.color = originalColor;
+                    alert("Error: " + data.message);
+                }
+            } catch (err) {
+                this.style.color = originalColor;
+                console.error(err);
+            }
+        });
     });
 </script>
 {% endblock %}

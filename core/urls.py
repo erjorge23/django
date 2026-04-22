@@ -14,4 +14,8 @@ urlpatterns = [
     # 3. Tu buscador (Home) y la API
     path('', views.home, name='home'),
     path('api/get-stars/', views.api_get_wallapop_stars, name='get_stars'),
-]
+
+    # 4. Favoritos
+    path('favoritos/toggle/', views.toggle_favorito, name='toggle_favorito'),
+    path('favoritos/', views.lista_favoritos, name='favoritos'),
+]
