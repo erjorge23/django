@@ -146,7 +146,15 @@
     .bg-amazon { background-color: #f59e0b; color: white; }
     .bg-ebay { background-color: #2563eb; color: white; }
     .bg-wallapop { background-color: #10b981; color: white; }
-    .bg-aliexpress { background-color: #ef4444; color: white; }
+    .bg-aliexpress {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .bg-walmart {
+        background-color: #0071ce;
+        color: white;
+    }
 
     /* Tarjetas */
     .product-card {
@@ -267,6 +275,10 @@
                             <input type="checkbox" name="tienda" class="filtro-tienda" value="Wallapop" checked>
                             Wallapop
                         </label>
+                        <label class="store-check d-flex align-items-center gap-1">
+                            <input type="checkbox" name="tienda" class="filtro-tienda" value="Walmart" checked>
+                            Walmart
+                        </label>
                     </div>
                 </div>
 
@@ -323,6 +335,8 @@
                             <span class="badge store-badge bg-ebay">eBay</span>
                             {% elif item.tienda == 'AliExpress' %}
                             <span class="badge store-badge bg-aliexpress">AliExpress</span>
+                            {% elif item.tienda == 'Walmart' %}
+                            <span class="badge store-badge bg-walmart">Walmart</span>
                             {% else %}
                             <span class="badge store-badge bg-wallapop">Wallapop</span>
                             {% endif %}

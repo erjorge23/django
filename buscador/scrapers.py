@@ -28,6 +28,7 @@ LOGO_EBAY = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo
 LOGO_AMAZON = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Amazon_icon.svg/200px-Amazon_icon.svg.png"
 LOGO_WALLAPOP = "https://pbs.twimg.com/profile_images/1580889839447474177/2t2rX8Q__400x400.jpg"
 LOGO_ALIEXPRESS = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Aliexpress_logo.svg/200px-Aliexpress_logo.svg.png"
+LOGO_WALMART = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Walmart_logo.svg/200px-Walmart_logo.svg.png"
 
 def obtener_token_ebay():
     if EBAY_APP_ID == "PEGA_AQUI_TU_APP_ID": return None
@@ -329,5 +330,80 @@ def buscar_en_aliexpress(nombre_producto):
 
     except Exception as e:
         logger.error(f"Error en API de AliExpress: {e}", exc_info=True)
+
+    return resultados
+
+def buscar_en_walmart(nombre_producto):
+    if RAPIDAPI_KEY == "PEGA_AQUI_TU_RAPIDAPI_KEY":
+        logger.warning("RAPIDAPI_KEY no configurada. No se puede usar la API de Walmart.")
+        return []
+
+    url = "https://walmart-data.p.rapidapi.com/search"
+    querystring = {"q": nombre_producto}
+    headers = {
+        "x-rapidapi-key": RAPIDAPI_KEY,
+        "x-rapidapi-host": "walmart-data.p.rapidapi.com"
+    }
+
+    print(f"✅ USANDO API DE WALMART PARA: {nombre_producto}")
+    logger.info(f"=> Empezando búsqueda de '{nombre_producto}' en Walmart mediante API")
+
+    resultados = []
+    try:
+        response = requests.get(url, headers=headers, params=querystring, timeout=25)
+        response.raise_for_status()
+        data = response.json()
+
+        search_result_lists = data.get("searchResult", [])
+        if search_result_lists and isinstance(search_result_lists[0], list):
+            items = search_result_lists[0]
+        else:
+            items = search_result_lists
+
+        for item in items[:LIMITE_PRODUCTOS]:
+            try:
+                if not isinstance(item, dict): continue
+                nombre = item.get("name", "Producto Walmart")[:80]
+                
+                # Precios
+                precio_raw = item.get("price")
+                if not precio_raw:
+                    continue
+                    
+                precio = f"{precio_raw} USD"
+
+                # Generar el link para ir al producto
+                link = item.get("productUrl", "")
+                if not link:
+                    # Alternativa si solo hay ID o nada
+                    link = f"https://www.walmart.com/search?q={nombre.replace(' ', '+')}"
+                elif link.startswith("/"):
+                    link = "https://www.walmart.com" + link
+
+                imagen = item.get("image", LOGO_WALMART)
+                
+                rating = item.get("rating", {})
+                if rating and isinstance(rating, dict):
+                    estrellas = rating.get("averageRating", "")
+                    votos = rating.get("numberOfReviews", "")
+                    valoracion = f"⭐ {estrellas} ({votos} val.)" if estrellas else "Sin opiniones"
+                else:
+                    valoracion = "Sin opiniones"
+
+                resultados.append({
+                    'nombre': nombre,
+                    'tienda': 'Walmart',
+                    'precio': precio,
+                    'link': link,
+                    'imagen': imagen,
+                    'stock': True,
+                    'valoracion': valoracion
+                })
+            except Exception as e:
+                logger.warning(f"Error parseando producto Walmart: {e}")
+                continue
+
+    except Exception as e:
+        logger.error(f"Error en API de Walmart: {e}", exc_info=True)
 
     return resultados

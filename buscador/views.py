@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import BusquedaProductoForm, RegistroForm
 from .models import Producto, Favorito
-from .scrapers import buscar_en_ebay, buscar_en_amazon, buscar_en_wallapop, obtener_estrellas_wallapop, buscar_en_aliexpress
+from .scrapers import buscar_en_ebay, buscar_en_amazon, buscar_en_wallapop, obtener_estrellas_wallapop, buscar_en_aliexpress, buscar_en_walmart
 from .scraper_utils import extraer_precio
 
 import re
@@ -43,6 +43,7 @@ def home(request):
                 f_amz = executor.submit(buscar_en_amazon, busqueda)
                 f_wa = executor.submit(buscar_en_wallapop, busqueda)
                 f_ali = executor.submit(buscar_en_aliexpress, busqueda)
+                f_wal = executor.submit(buscar_en_walmart, busqueda)
                 
                 try: res_ebay = f_ebay.result(timeout=25)
                 except: res_ebay = []
@@ -56,7 +57,10 @@ def home(request):
                 try: res_ali = f_ali.result(timeout=25)
                 except: res_ali = []
 
-            resultados_finales = res_ebay + res_amz + res_wa + res_ali
+                try: res_wal = f_wal.result(timeout=25)
+                except: res_wal = []
+
+            resultados_finales = res_ebay + res_amz + res_wa + res_ali + res_wal
             
             resultados_finales.sort(key=extraer_precio)
             

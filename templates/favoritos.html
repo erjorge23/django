@@ -18,6 +18,7 @@
     .bg-ebay { background-color: #0064d2; color: white; }
     .bg-wallapop { background-color: #13c1ac; color: white; }
     .bg-aliexpress { background-color: #e74c3c; color: white; }
+    .bg-walmart { background-color: #0071ce; color: white; }
 
     /* Tarjetas */
     .product-card {
@@ -92,6 +93,8 @@
                             <span class="badge store-badge bg-ebay">eBay</span>
                             {% elif fav.producto.tienda == 'AliExpress' %}
                             <span class="badge store-badge bg-aliexpress">AliExpress</span>
+                            {% elif fav.producto.tienda == 'Walmart' %}
+                            <span class="badge store-badge bg-walmart">Walmart</span>
                             {% else %}
                             <span class="badge store-badge bg-wallapop">Wallapop</span>
                             {% endif %}
