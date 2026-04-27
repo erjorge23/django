@@ -37,6 +37,12 @@ def home(request):
         cache_key = f"search_secure_v2_{busqueda.replace(' ', '_')}"
         resultados_finales = cache.get(cache_key)
 
+        if resultados_finales:
+            for item in resultados_finales:
+                if 'precio_num' not in item:
+                    item['precio_num'] = extraer_precio(item)
+            resultados_finales.sort(key=lambda x: x.get('precio_num', 999999.0))
+
         if not resultados_finales:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 f_ebay = executor.submit(buscar_en_ebay, busqueda)
@@ -62,7 +68,10 @@ def home(request):
 
             resultados_finales = res_ebay + res_amz + res_wa + res_ali + res_wal
             
-            resultados_finales.sort(key=extraer_precio)
+            for item in resultados_finales:
+                item['precio_num'] = extraer_precio(item)
+
+            resultados_finales.sort(key=lambda x: x['precio_num'])
             
             for item in resultados_finales:
                 try:

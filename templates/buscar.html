@@ -19,9 +19,11 @@
     .search-hero::before {
         content: '';
         position: absolute;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
         pointer-events: none;
     }
 
@@ -30,11 +32,11 @@
         padding: 1.25rem 1.75rem;
         border: none;
         font-size: 1.15rem;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
     }
 
     .search-input:focus {
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
         outline: none;
     }
 
@@ -81,8 +83,10 @@
         color: #334155;
         transition: color 0.2s;
     }
-    
-    .store-check:hover { color: #0f172a; }
+
+    .store-check:hover {
+        color: #0f172a;
+    }
 
     .price-inputs {
         display: flex;
@@ -98,7 +102,12 @@
         padding: 0.5rem;
         transition: all 0.2s;
     }
-    .price-inputs input:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+
+    .price-inputs input:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
 
     .sort-select {
         font-size: 0.95rem;
@@ -112,7 +121,12 @@
         background-color: white;
         transition: all 0.2s;
     }
-    .sort-select:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+
+    .sort-select:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
 
     .btn-reset-filtros {
         font-size: 0.85rem;
@@ -140,12 +154,24 @@
         font-size: 0.75rem;
         letter-spacing: 0.05em;
         text-transform: uppercase;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
-    .bg-amazon { background-color: #f59e0b; color: white; }
-    .bg-ebay { background-color: #2563eb; color: white; }
-    .bg-wallapop { background-color: #10b981; color: white; }
+    .bg-amazon {
+        background-color: #f59e0b;
+        color: white;
+    }
+
+    .bg-ebay {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    .bg-wallapop {
+        background-color: #10b981;
+        color: white;
+    }
+
     .bg-aliexpress {
         background-color: #e74c3c;
         color: white;
@@ -188,6 +214,7 @@
         object-fit: contain;
         transition: transform 0.4s ease;
     }
+
     .product-card:hover .card-img-container img {
         transform: scale(1.05);
     }
@@ -218,6 +245,7 @@
         font-weight: 600;
         transition: all 0.2s ease;
     }
+
     .btn-ver-oferta:hover {
         background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
         transform: translateY(-1px);
@@ -225,7 +253,9 @@
     }
 
     /* Resultado vacío por filtros */
-    .no-results-filter { display: none; }
+    .no-results-filter {
+        display: none;
+    }
 
     /* Contador visible */
     #contador-resultados {
@@ -240,7 +270,7 @@
     <!-- Buscador hero -->
     <form method="GET" action="{% url 'home' %}" id="search-form">
         <div class="search-hero text-center">
-            <h1 class="fw-bold mb-3">&#9889; Busca y Compara Precios</h1>
+            <h1 class="fw-bold mb-3">&#9889; Busca y compara precios</h1>
             <p class="mb-4 opacity-75 fs-5">Encuentra las mejores ofertas en tiempo real.</p>
             <div class="row justify-content-center">
                 <div class="col-md-9 col-lg-7">
@@ -259,7 +289,7 @@
 
                 <!-- Filtro por tienda -->
                 <div class="col-md-4">
-                    <h6>&#127978; Por Tienda</h6>
+                    <h6>&#127978; Por tienda</h6>
                     <div class="d-flex flex-wrap gap-3">
                         <label class="store-check d-flex align-items-center gap-1">
                             <input type="checkbox" name="tienda" class="filtro-tienda" value="Amazon" checked> Amazon
@@ -284,7 +314,7 @@
 
                 <!-- Filtro por precio -->
                 <div class="col-md-4">
-                    <h6>&#128176; Rango de Precio (EUR)</h6>
+                    <h6>&#128176; Rango de precio (EUR)</h6>
                     <div class="price-inputs">
                         <input type="number" name="min" id="precio-min" class="form-control" placeholder="Min" min="0"
                             step="0.01">
@@ -320,7 +350,7 @@
     <div class="row g-4" id="productos-grid">
         {% for item in resultados %}
         <div class="col-md-4 producto-card-wrapper" data-tienda="{{ item.tienda }}"
-            data-precio="{{ item.precio|cut:' EUR'|cut:','|cut:'.' }}" data-precio-raw="{{ item.precio }}"
+            data-precio="{{ item.precio|cut:' EUR'|cut:','|cut:'.' }}" data-precio-raw="{{ item.precio }}" data-precio-num="{{ item.precio_num }}"
             data-nombre="{{ item.nombre|lower }}">
             <div class="card h-100 product-card shadow-sm border-0">
                 <div class="card-img-container">
@@ -342,10 +372,10 @@
                             {% endif %}
                         </div>
                         {% if user.is_authenticated %}
-                        <button class="btn btn-light rounded-circle shadow-sm btn-favorito p-0" 
-                                data-link="{{ item.link }}" 
-                                style="width: 35px; height: 35px; border: 1px solid #e2e8f0; color: {% if item.link in favoritos_links %}#ef4444{% else %}#cbd5e1{% endif %}; font-size: 1.2rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;"
-                                title="Favorito">
+                        <button class="btn btn-light rounded-circle shadow-sm btn-favorito p-0"
+                            data-link="{{ item.link }}"
+                            style="width: 35px; height: 35px; border: 1px solid #e2e8f0; color: {% if item.link in favoritos_links %}#ef4444{% else %}#cbd5e1{% endif %}; font-size: 1.2rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;"
+                            title="Favorito">
                             &#10084;
                         </button>
                         {% endif %}
@@ -362,8 +392,8 @@
                             {{ item.valoracion }}
                             {% endif %}
                         </div>
-                        <a href="{{ item.link }}" target="_blank"
-                            class="btn btn-ver-oferta w-100 rounded-pill py-2">Ver Oferta &#128279;</a>
+                        <a href="{{ item.link }}" target="_blank" class="btn btn-ver-oferta w-100 rounded-pill py-2">Ver
+                            oferta &#128279;</a>
                     </div>
                 </div>
             </div>
@@ -392,185 +422,184 @@
         <h1 style="font-size: 5rem; opacity: 0.9;">&#128717;</h1>
         <h2 class="fw-bold mt-3 text-dark">&#191;Qu&#233; necesitas comprar hoy?</h2>
         <p class="text-muted fs-5">Escribe el nombre de un producto arriba y encontraremos el precio m&#225;s bajo.</p>
-    {% endif %}
-</div>
-
-<!-- Toast Notificación -->
-<div id="toast-favorito" class="toast align-items-center text-white border-0 position-fixed top-0 end-0 m-4 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 9999; display: none; min-width: 250px;">
-  <div class="d-flex">
-    <div class="toast-body fs-6 fw-bold text-center w-100" id="toast-favorito-msj">
-      ¡Añadido a favoritos!
+        {% endif %}
     </div>
-  </div>
-</div>
 
-<script>
-    // =================== FILTROS ===================
-    const grid = document.getElementById('productos-grid');
-    const sinResultados = document.getElementById('sin-resultados-filtro');
-    const contador = document.getElementById('contador-resultados');
+    <!-- Toast Notificación -->
+    <div id="toast-favorito"
+        class="toast align-items-center text-white border-0 position-fixed top-0 end-0 m-4 shadow-lg" role="alert"
+        aria-live="assertive" aria-atomic="true" style="z-index: 9999; display: none; min-width: 250px;">
+        <div class="d-flex">
+            <div class="toast-body fs-6 fw-bold text-center w-100" id="toast-favorito-msj">
+                ¡Añadido a favoritos!
+            </div>
+        </div>
+    </div>
 
-    function parsePrecio(card) {
-        // Extraer número del precio (ej: "12,99 EUR" -> 12.99)
-        const raw = card.dataset.precioRaw || '';
-        const num = raw.replace(/[^\d,.]/g, '').replace(',', '.');
-        return parseFloat(num) || 0;
-    }
+    <script>
+        // =================== FILTROS ===================
+        const grid = document.getElementById('productos-grid');
+        const sinResultados = document.getElementById('sin-resultados-filtro');
+        const contador = document.getElementById('contador-resultados');
 
-    function aplicarFiltros() {
-        const tiendasActivas = new Set(
-            [...document.querySelectorAll('.filtro-tienda:checked')].map(cb => cb.value)
-        );
-        const precioMin = parseFloat(document.getElementById('precio-min').value) || 0;
-        const precioMax = parseFloat(document.getElementById('precio-max').value) || Infinity;
-        const orden = document.getElementById('orden-select').value;
+        function parsePrecio(card) {
+            return parseFloat(card.dataset.precioNum) || 0;
+        }
 
-        const cards = [...document.querySelectorAll('.producto-card-wrapper')];
+        function aplicarFiltros() {
+            const tiendasActivas = new Set(
+                [...document.querySelectorAll('.filtro-tienda:checked')].map(cb => cb.value)
+            );
+            const precioMin = parseFloat(document.getElementById('precio-min').value) || 0;
+            const precioMax = parseFloat(document.getElementById('precio-max').value) || Infinity;
+            const orden = document.getElementById('orden-select').value;
 
-        // Filtrar
-        let visibles = cards.filter(card => {
-            const tienda = card.dataset.tienda;
-            const precio = parsePrecio(card);
-            const matchTienda = tiendasActivas.has(tienda);
-            const matchPrecio = precio >= precioMin && precio <= precioMax;
-            return matchTienda && matchPrecio;
-        });
+            const cards = [...document.querySelectorAll('.producto-card-wrapper')];
 
-        // Ordenar
-        visibles.sort((a, b) => {
-            const pa = parsePrecio(a), pb = parsePrecio(b);
-            const na = a.dataset.nombre, nb = b.dataset.nombre;
-            if (orden === 'precio-asc') return pa - pb;
-            if (orden === 'precio-desc') return pb - pa;
-            if (orden === 'nombre-asc') return na.localeCompare(nb);
-            if (orden === 'nombre-desc') return nb.localeCompare(na);
-            return 0;
-        });
-
-        // Ocultar todos, luego mostrar visibles en orden
-        cards.forEach(c => { c.style.display = 'none'; });
-        visibles.forEach(c => { c.style.display = ''; grid.appendChild(c); });
-
-        // Contador y mensaje vacío
-        const total = visibles.length;
-        if (contador) contador.textContent = total + ' ofertas';
-        if (sinResultados) sinResultados.style.display = total === 0 ? 'block' : 'none';
-    }
-
-    function resetFiltros() {
-        document.querySelectorAll('.filtro-tienda').forEach(cb => cb.checked = true);
-        document.getElementById('precio-min').value = '';
-        document.getElementById('precio-max').value = '';
-        document.getElementById('orden-select').value = 'precio-asc';
-        aplicarFiltros();
-    }
-
-    // Eventos
-    document.querySelectorAll('.filtro-tienda').forEach(cb => cb.addEventListener('change', aplicarFiltros));
-    document.getElementById('precio-min')?.addEventListener('input', aplicarFiltros);
-    document.getElementById('precio-max')?.addEventListener('input', aplicarFiltros);
-    document.getElementById('orden-select')?.addEventListener('change', aplicarFiltros);
-    document.getElementById('btn-reset')?.addEventListener('click', resetFiltros);
-    document.getElementById('btn-reset2')?.addEventListener('click', resetFiltros);
-
-    // Arrancar con orden por precio asc
-
-    // Restaurar estado de filtros desde la URL si existen
-    function restoreFiltersFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        if (!params.has('q')) return; // No se ha buscado aún
-
-        if (params.getAll('tienda').length > 0) {
-            const tiendas = params.getAll('tienda');
-            document.querySelectorAll('.filtro-tienda').forEach(cb => {
-                cb.checked = tiendas.includes(cb.value);
+            // Filtrar
+            let visibles = cards.filter(card => {
+                const tienda = card.dataset.tienda;
+                const precio = parsePrecio(card);
+                const matchTienda = tiendasActivas.has(tienda);
+                const matchPrecio = precio >= precioMin && precio <= precioMax;
+                return matchTienda && matchPrecio;
             });
-        }
-        if (params.has('min') && params.get('min')) {
-            document.getElementById('precio-min').value = params.get('min');
-        }
-        if (params.has('max') && params.get('max')) {
-            document.getElementById('precio-max').value = params.get('max');
-        }
-        if (params.has('orden') && params.get('orden')) {
-            document.getElementById('orden-select').value = params.get('orden');
-        }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        restoreFiltersFromUrl();
-        aplicarFiltros();
-    });
+            // Ordenar
+            visibles.sort((a, b) => {
+                const pa = parsePrecio(a), pb = parsePrecio(b);
+                const na = a.dataset.nombre, nb = b.dataset.nombre;
+                if (orden === 'precio-asc') return pa - pb;
+                if (orden === 'precio-desc') return pb - pa;
+                if (orden === 'nombre-asc') return na.localeCompare(nb);
+                if (orden === 'nombre-desc') return nb.localeCompare(na);
+                return 0;
+            });
 
+            // Ocultar todos, luego mostrar visibles en orden
+            cards.forEach(c => { c.style.display = 'none'; });
+            visibles.forEach(c => { c.style.display = ''; grid.appendChild(c); });
 
-    // =================== VALORACIONES WALLAPOP ===================
-    document.addEventListener("DOMContentLoaded", async function () {
-        const celdas = document.querySelectorAll('.valoracion-cell');
-        for (const celda of celdas) {
-            if (celda.dataset.tienda === 'Wallapop' && celda.innerText.includes('Consultando')) {
-                try {
-                    const response = await fetch('/api/get-stars/?url=' + encodeURIComponent(celda.dataset.link));
-                    const data = await response.json();
-                    celda.innerHTML = '<span class="text-primary fw-bold">' + data.stars + '</span>';
-                } catch (err) {
-                    celda.innerText = 'Sin datos';
-                }
+            // Contador y mensaje vacío
+            const total = visibles.length;
+            if (contador) contador.textContent = total + ' ofertas';
+            if (sinResultados) sinResultados.style.display = total === 0 ? 'block' : 'none';
+        }
+
+        function resetFiltros() {
+            document.querySelectorAll('.filtro-tienda').forEach(cb => cb.checked = true);
+            document.getElementById('precio-min').value = '';
+            document.getElementById('precio-max').value = '';
+            document.getElementById('orden-select').value = 'precio-asc';
+            aplicarFiltros();
+        }
+
+        // Eventos
+        document.querySelectorAll('.filtro-tienda').forEach(cb => cb.addEventListener('change', aplicarFiltros));
+        document.getElementById('precio-min')?.addEventListener('input', aplicarFiltros);
+        document.getElementById('precio-max')?.addEventListener('input', aplicarFiltros);
+        document.getElementById('orden-select')?.addEventListener('change', aplicarFiltros);
+        document.getElementById('btn-reset')?.addEventListener('click', resetFiltros);
+        document.getElementById('btn-reset2')?.addEventListener('click', resetFiltros);
+
+        // Arrancar con orden por precio asc
+
+        // Restaurar estado de filtros desde la URL si existen
+        function restoreFiltersFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (!params.has('q')) return; // No se ha buscado aún
+
+            if (params.getAll('tienda').length > 0) {
+                const tiendas = params.getAll('tienda');
+                document.querySelectorAll('.filtro-tienda').forEach(cb => {
+                    cb.checked = tiendas.includes(cb.value);
+                });
+            }
+            if (params.has('min') && params.get('min')) {
+                document.getElementById('precio-min').value = params.get('min');
+            }
+            if (params.has('max') && params.get('max')) {
+                document.getElementById('precio-max').value = params.get('max');
+            }
+            if (params.has('orden') && params.get('orden')) {
+                document.getElementById('orden-select').value = params.get('orden');
             }
         }
-    });
-    // =================== FAVORITOS ===================
-    const csrfToken = '{{ csrf_token }}'; // Django template tag
-    document.querySelectorAll('.btn-favorito').forEach(btn => {
-        btn.addEventListener('click', async function(e) {
-            e.preventDefault();
-            const link = this.dataset.link;
-            const originalColor = this.style.color;
-            
-            // Optimistic UI
-            const isAdded = originalColor.includes('rgb(239, 68, 68)') || originalColor.includes('#ef4444');
-            this.style.color = isAdded ? '#cbd5e1' : '#ef4444';
-            this.style.transform = 'scale(1.2)';
-            setTimeout(() => this.style.transform = 'scale(1)', 200);
-            
-            try {
-                const response = await fetch('/favoritos/toggle/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: JSON.stringify({link: link})
-                });
-                const data = await response.json();
-                
-                function mostrarToast(mensaje, bgColor) {
-                    const toastEl = document.getElementById('toast-favorito');
-                    const toastMsj = document.getElementById('toast-favorito-msj');
-                    toastEl.className = `toast align-items-center text-white border-0 position-fixed bottom-0 end-0 m-4 shadow-lg ${bgColor}`;
-                    toastMsj.innerHTML = mensaje;
-                    toastEl.style.display = 'block';
-                    toastEl.classList.add('show');
-                    setTimeout(() => {
-                        toastEl.classList.remove('show');
-                        setTimeout(() => toastEl.style.display = 'none', 300);
-                    }, 3000);
-                }
 
-                if(data.status === 'added') {
-                    this.style.color = '#ef4444';
-                    mostrarToast("❤️ Guardado en tus Favoritos", "bg-success");
-                } else if(data.status === 'removed') {
-                    this.style.color = '#cbd5e1';
-                    mostrarToast("💔 Eliminado de tus Favoritos", "bg-secondary");
-                } else {
-                    this.style.color = originalColor;
-                    alert("Error: " + data.message);
+        document.addEventListener('DOMContentLoaded', () => {
+            restoreFiltersFromUrl();
+            aplicarFiltros();
+        });
+
+
+        // =================== VALORACIONES WALLAPOP ===================
+        document.addEventListener("DOMContentLoaded", async function () {
+            const celdas = document.querySelectorAll('.valoracion-cell');
+            for (const celda of celdas) {
+                if (celda.dataset.tienda === 'Wallapop' && celda.innerText.includes('Consultando')) {
+                    try {
+                        const response = await fetch('/api/get-stars/?url=' + encodeURIComponent(celda.dataset.link));
+                        const data = await response.json();
+                        celda.innerHTML = '<span class="text-primary fw-bold">' + data.stars + '</span>';
+                    } catch (err) {
+                        celda.innerText = 'Sin datos';
+                    }
                 }
-            } catch (err) {
-                this.style.color = originalColor;
-                console.error(err);
             }
         });
-    });
-</script>
-{% endblock %}
+        // =================== FAVORITOS ===================
+        const csrfToken = '{{ csrf_token }}'; // Django template tag
+        document.querySelectorAll('.btn-favorito').forEach(btn => {
+            btn.addEventListener('click', async function (e) {
+                e.preventDefault();
+                const link = this.dataset.link;
+                const originalColor = this.style.color;
+
+                // Optimistic UI
+                const isAdded = originalColor.includes('rgb(239, 68, 68)') || originalColor.includes('#ef4444');
+                this.style.color = isAdded ? '#cbd5e1' : '#ef4444';
+                this.style.transform = 'scale(1.2)';
+                setTimeout(() => this.style.transform = 'scale(1)', 200);
+
+                try {
+                    const response = await fetch('/favoritos/toggle/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({ link: link })
+                    });
+                    const data = await response.json();
+
+                    function mostrarToast(mensaje, bgColor) {
+                        const toastEl = document.getElementById('toast-favorito');
+                        const toastMsj = document.getElementById('toast-favorito-msj');
+                        toastEl.className = `toast align-items-center text-white border-0 position-fixed bottom-0 end-0 m-4 shadow-lg ${bgColor}`;
+                        toastMsj.innerHTML = mensaje;
+                        toastEl.style.display = 'block';
+                        toastEl.classList.add('show');
+                        setTimeout(() => {
+                            toastEl.classList.remove('show');
+                            setTimeout(() => toastEl.style.display = 'none', 300);
+                        }, 3000);
+                    }
+
+                    if (data.status === 'added') {
+                        this.style.color = '#ef4444';
+                        mostrarToast("❤️ Guardado en tus Favoritos", "bg-success");
+                    } else if (data.status === 'removed') {
+                        this.style.color = '#cbd5e1';
+                        mostrarToast("💔 Eliminado de tus Favoritos", "bg-secondary");
+                    } else {
+                        this.style.color = originalColor;
+                        alert("Error: " + data.message);
+                    }
+                } catch (err) {
+                    this.style.color = originalColor;
+                    console.error(err);
+                }
+            });
+        });
+    </script>
+    {% endblock %}

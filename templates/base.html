@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparador de Precios</title>
+    <title>Comparador de precios</title>
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #f8fafc; /* Color de fondo base ligero gris-azulado */
-            --glass-bg: rgba(255, 255, 255, 0.75); /* Transparencia para glassmorphism */
+            --primary-bg: #f8fafc;
+            /* Color de fondo base ligero gris-azulado */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            /* Transparencia para glassmorphism */
             --glass-border: rgba(255, 255, 255, 0.4);
             --accent-color: #4f46e5;
             --accent-hover: #4338ca;
         }
 
-        body { 
+        body {
             background-color: var(--primary-bg);
             font-family: 'Outfit', sans-serif;
             color: #1e293b;
@@ -67,6 +71,7 @@
             color: #ef4444;
             border: 1px solid transparent;
         }
+
         .nav-btn-fav:hover {
             background-color: #fca5a5;
             color: #b91c1c;
@@ -78,6 +83,7 @@
             color: #ef4444;
             border: 1px solid #ef4444;
         }
+
         .nav-btn-danger:hover {
             background-color: #ef4444;
             color: white;
@@ -88,6 +94,7 @@
             color: #4b5563;
             border: 1px solid #d1d5db;
         }
+
         .nav-btn-login:hover {
             background-color: #f3f4f6;
             color: #1f2937;
@@ -99,6 +106,7 @@
             border: none;
             box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
         }
+
         .nav-btn-signup:hover {
             background: linear-gradient(135deg, #4338ca 0%, #2563eb 100%);
             color: white;
@@ -110,50 +118,54 @@
             font-weight: 500;
             color: #475569;
         }
-        
-        .valoracion-cell { font-size: 0.9rem; }
+
+        .valoracion-cell {
+            font-size: 0.9rem;
+        }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light navbar-glass">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">
-            <span style="-webkit-text-fill-color: initial;">🛍️</span> CompaRadar
-        </a>
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <span style="-webkit-text-fill-color: initial;">🛍️</span> CompaRadar
+            </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border:none; padding:0;">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                style="border:none; padding:0;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="ms-auto d-flex flex-column flex-lg-row align-items-lg-center mt-3 mt-lg-0 gap-3">
-                {% if user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="ms-auto d-flex flex-column flex-lg-row align-items-lg-center mt-3 mt-lg-0 gap-3">
+                    {% if user.is_authenticated %}
                     <span class="user-greeting">
                         Hola, <strong class="text-dark">{{ user.username }}</strong> 👋
                     </span>
                     <a href="{% url 'favoritos' %}" class="nav-btn nav-btn-fav text-decoration-none">
                         <span>❤️</span> Favoritos
                     </a>
-                    
+
                     <form action="{% url 'logout' %}" method="post" class="d-inline m-0 p-0">
                         {% csrf_token %}
                         <button type="submit" class="nav-btn nav-btn-danger">
-                            Cerrar Sesión
+                            Cerrar sesión
                         </button>
                     </form>
 
-                {% else %}
+                    {% else %}
                     <a href="{% url 'login' %}" class="nav-btn nav-btn-login text-decoration-none">
-                        Iniciar Sesión
+                        Iniciar sesión
                     </a>
                     <a href="{% url 'signup' %}" class="nav-btn nav-btn-signup text-decoration-none">
                         Registrarse
                     </a>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
-      </div>
     </nav>
 
     {% block content %}
@@ -161,4 +173,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

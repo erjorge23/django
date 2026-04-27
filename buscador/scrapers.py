@@ -91,7 +91,7 @@ def buscar_amazon_por_api(nombre_producto):
         for item in response.json().get("data", {}).get("products", [])[:LIMITE_PRODUCTOS]:
             precio = item.get("product_price")
             if not precio: continue
-            precio_limpio = str(precio).replace("€", "").replace(".", "").strip() + " EUR"
+            precio_limpio = str(precio).replace("€", "").strip() + " EUR"
             estrellas = item.get("product_star_rating")
             votos = item.get("product_num_ratings")
             if estrellas and votos: valoracion = f"⭐ {estrellas} ({votos} val.)"
