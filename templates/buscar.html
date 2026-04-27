@@ -2,604 +2,564 @@
 {% block content %}
 
 <style>
-    /* Eliminamos body porque ya está en base.html */
+    body { background-color: #f8fafc !important; }
 
-    .search-hero {
-        background: radial-gradient(circle at top left, #4f46e5 0%, #3b82f6 100%);
+    /* Hero compacto */
+    .hero-compact {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
         border-radius: 1.5rem;
+        padding: 3.5rem 2rem;
         color: white;
-        padding: 4rem 2rem;
-        margin-top: 1rem;
         margin-bottom: 2.5rem;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.3);
     }
-
-    .search-hero::before {
+    .hero-compact::after {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+        top: -50%; left: -50%; right: -50%; bottom: -50%;
+        background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
         pointer-events: none;
     }
-
+    
     .search-input {
-        border-radius: 50px 0 0 50px !important;
-        padding: 1.25rem 1.75rem;
+        border-radius: 16px 0 0 16px !important;
         border: none;
-        font-size: 1.15rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+        padding: 1.25rem 1.5rem;
+        font-size: 1.1rem;
+        background: rgba(255, 255, 255, 0.95);
+        color: #1e293b;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
     }
-
     .search-input:focus {
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
         outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.3) !important;
     }
-
     .search-btn {
-        border-radius: 0 50px 50px 0 !important;
-        padding: 1.25rem 2.5rem;
-        font-weight: 700;
-        background-color: #1e1b4b;
+        border-radius: 0 16px 16px 0 !important;
+        background: #6366f1;
         border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 25px rgba(30, 27, 75, 0.2) !important;
+        padding: 0 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.2s;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2) !important;
     }
+    .search-btn:hover { background: #4f46e5; transform: translateY(-1px); }
 
-    .search-btn:hover {
-        background-color: #312e81;
-        transform: translateY(-1px);
-    }
-
-    /* Panel de filtros */
-    .filtros-panel {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+    /* Sidebar Filtros */
+    .sidebar-filtros {
+        background: white;
         border-radius: 1.25rem;
         padding: 1.75rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-        margin-bottom: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
+        position: sticky;
+        top: 2rem;
     }
-
-    .filtros-panel h6 {
-        font-weight: 700;
-        color: #475569;
-        margin-bottom: 1rem;
-        font-size: 0.85rem;
+    .filtro-titulo {
+        font-size: 0.8rem;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.15em;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 1.25rem;
     }
-
     .store-check {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.85rem;
+        font-weight: 600;
+        color: #475569;
         cursor: pointer;
-        user-select: none;
-        font-weight: 500;
-        color: #334155;
         transition: color 0.2s;
     }
-
-    .store-check:hover {
-        color: #0f172a;
-    }
-
-    .price-inputs {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-
-    .price-inputs input {
-        width: 100px;
-        font-size: 0.95rem;
-        border-radius: 8px;
-        border: 1px solid #cbd5e1;
-        padding: 0.5rem;
-        transition: all 0.2s;
-    }
-
-    .price-inputs input:focus {
-        border-color: #3b82f6;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .sort-select {
-        font-size: 0.95rem;
-        font-weight: 500;
-        border-radius: 10px;
-        border: 1px solid #cbd5e1;
-        padding: 0.6rem 1rem;
+    .store-check:hover { color: #0f172a; }
+    .store-check input {
+        accent-color: #6366f1;
+        width: 1.15rem; height: 1.15rem;
         cursor: pointer;
+    }
+    .price-input-modern {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.6rem;
         width: 100%;
-        color: #334155;
-        background-color: white;
+        text-align: center;
+        font-weight: 500;
+        color: #1e293b;
         transition: all 0.2s;
+        background-color: #f8fafc;
+    }
+    .price-input-modern:focus { 
+        border-color: #6366f1; 
+        background-color: white;
+        outline: none; 
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     }
 
+    /* Select moderno */
+    .sort-select {
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        color: #1e293b;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
     .sort-select:focus {
-        border-color: #3b82f6;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
         outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
     .btn-reset-filtros {
         font-size: 0.85rem;
         color: #64748b;
-        background: rgba(241, 245, 249, 0.8);
-        border: none;
+        background: transparent;
+        border: 2px solid #e2e8f0;
         cursor: pointer;
-        padding: 0.4rem 0.8rem;
-        border-radius: 6px;
-        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
         font-weight: 600;
         transition: all 0.2s;
+        width: 100%;
+        text-align: center;
     }
-
     .btn-reset-filtros:hover {
-        background: #fee2e2;
-        color: #ef4444;
+        background: #f1f5f9;
+        color: #0f172a;
+        border-color: #cbd5e1;
     }
 
-    /* Badges de tiendas */
-    .store-badge {
-        font-weight: 700;
-        padding: 0.45em 0.9em;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
-
-    .bg-amazon {
-        background-color: #f59e0b;
-        color: white;
-    }
-
-    .bg-ebay {
-        background-color: #2563eb;
-        color: white;
-    }
-
-    .bg-wallapop {
-        background-color: #10b981;
-        color: white;
-    }
-
-    .bg-aliexpress {
-        background-color: #e74c3c;
-        color: white;
-    }
-
-    .bg-walmart {
-        background-color: #0071ce;
-        color: white;
-    }
-
-    /* Tarjetas */
+    /* Tarjetas de Producto */
     .product-card {
-        border-radius: 1.25rem;
-        border: none;
         background: white;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        border-radius: 1.25rem;
+        border: 1px solid transparent;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+        position: relative;
     }
-
     .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        transform: translateY(-6px);
+        box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.15);
+        border-color: rgba(99, 102, 241, 0.3);
     }
-
-    .card-img-container {
+    .card-img-wrapper {
+        position: relative;
+        padding: 2rem;
+        background: white;
+        border-radius: 1.25rem 1.25rem 0 0;
         height: 220px;
-        background-color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1.5rem;
         border-bottom: 1px solid #f1f5f9;
-        position: relative;
     }
-
-    .card-img-container img {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain;
+    .card-img-wrapper img {
+        max-height: 100%; max-width: 100%; object-fit: contain;
         transition: transform 0.4s ease;
     }
-
-    .product-card:hover .card-img-container img {
-        transform: scale(1.05);
+    .product-card:hover .card-img-wrapper img { transform: scale(1.08); }
+    
+    .store-badge-floating {
+        position: absolute;
+        top: 1rem; left: 1rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: white;
+        z-index: 2;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
+    .bg-amazon { background-color: #f59e0b; }
+    .bg-ebay { background-color: #2563eb; }
+    .bg-wallapop { background-color: #10b981; }
+    .bg-aliexpress { background-color: #e74c3c; }
+    .bg-walmart { background-color: #0071ce; }
 
+    .fav-btn-floating {
+        position: absolute;
+        top: 1rem; right: 1rem;
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem;
+        z-index: 2;
+        transition: all 0.2s;
+        padding: 0;
+        line-height: 1;
+    }
+    .fav-btn-floating:hover { transform: scale(1.15); border-color: #cbd5e1; }
+
+    .card-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
     .price-tag {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         font-weight: 800;
         color: #0f172a;
+        margin-bottom: 0.5rem;
         letter-spacing: -0.5px;
     }
-
-    .truncate-text-2-lines {
+    .product-title {
+        font-size: 0.95rem;
+        color: #334155;
+        font-weight: 600;
+        line-height: 1.5;
+        margin-bottom: 1rem;
         display: -webkit-box;
         -webkit-line-clamp: 2;
-        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
-        min-height: 48px;
-        color: #1e293b;
-        line-height: 1.4;
     }
-
     .btn-ver-oferta {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        border: none;
+        margin-top: auto;
+        width: 100%;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
         color: white;
         font-weight: 600;
-        transition: all 0.2s ease;
+        padding: 0.8rem;
+        border: none;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
     }
-
     .btn-ver-oferta:hover {
-        background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 8px 15px rgba(15, 23, 42, 0.2);
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
     }
-
-    /* Resultado vacío por filtros */
-    .no-results-filter {
-        display: none;
-    }
-
-    /* Contador visible */
-    #contador-resultados {
-        font-size: 0.9rem;
-        font-weight: 600;
-        background: #e2e8f0;
-        color: #475569;
-    }
+    
+    .no-results-filter { display: none; }
 </style>
 
-<div class="container mt-4 mb-5">
-    <!-- Buscador hero -->
+<div class="container-fluid px-4 px-lg-5 mt-4 mb-5" style="max-width: 1600px;">
+    <!-- HERO COMPACTO -->
     <form method="GET" action="{% url 'home' %}" id="search-form">
-        <div class="search-hero text-center">
-            <h1 class="fw-bold mb-3">&#9889; Busca y compara precios</h1>
-            <p class="mb-4 opacity-75 fs-5">Encuentra las mejores ofertas en tiempo real.</p>
-            <div class="row justify-content-center">
-                <div class="col-md-9 col-lg-7">
-                    <div class="input-group input-group-lg shadow-lg">
+        <div class="hero-compact shadow-lg">
+            <div class="row align-items-center position-relative" style="z-index: 10;">
+                <div class="col-lg-5 mb-4 mb-lg-0 text-center text-lg-start">
+                    <h1 class="fw-bold mb-2" style="font-size: 2.5rem;">&#9889; Compara y ahorra</h1>
+                    <p class="opacity-75 fs-5 m-0">Encuentra el mejor precio en cientos de tiendas.</p>
+                </div>
+                <div class="col-lg-7">
+                    <div class="input-group input-group-lg">
                         <input type="text" name="q" id="search-input" class="form-control search-input"
-                            placeholder="Busca un producto..." value="{{ busqueda }}" autocomplete="off" required>
+                            placeholder="¿Qué estás buscando hoy?" value="{{ busqueda }}" autocomplete="off" required>
                         <button class="btn btn-primary search-btn text-white" type="submit">Buscar &#128269;</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Panel de filtros (SIEMPRE VISIBLE) -->
-        <div class="filtros-panel">
-            <div class="row g-3 align-items-start">
+        <div class="row gx-4 gx-xl-5">
+            <!-- SIDEBAR FILTROS -->
+            <div class="col-lg-3 mb-4">
+                <div class="sidebar-filtros">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold m-0 text-dark">Filtros</h5>
+                    </div>
 
-                <!-- Filtro por tienda -->
-                <div class="col-md-4">
-                    <h6>&#127978; Por tienda</h6>
-                    <div class="d-flex flex-wrap gap-3">
-                        <label class="store-check d-flex align-items-center gap-1">
-                            <input type="checkbox" name="tienda" class="filtro-tienda" value="Amazon" checked> Amazon
-                        </label>
-                        <label class="store-check d-flex align-items-center gap-1">
-                            <input type="checkbox" name="tienda" class="filtro-tienda" value="eBay" checked> eBay
-                        </label>
-                        <label class="store-check d-flex align-items-center gap-1">
-                            <input type="checkbox" name="tienda" class="filtro-tienda" value="AliExpress" checked>
-                            AliExpress
-                        </label>
-                        <label class="store-check d-flex align-items-center gap-1">
-                            <input type="checkbox" name="tienda" class="filtro-tienda" value="Wallapop" checked>
-                            Wallapop
-                        </label>
-                        <label class="store-check d-flex align-items-center gap-1">
-                            <input type="checkbox" name="tienda" class="filtro-tienda" value="Walmart" checked>
-                            Walmart
-                        </label>
+                    <div class="mb-4">
+                        <div class="filtro-titulo">Tiendas</div>
+                        <label class="store-check"><input type="checkbox" name="tienda" class="filtro-tienda" value="Amazon" checked> Amazon</label>
+                        <label class="store-check"><input type="checkbox" name="tienda" class="filtro-tienda" value="eBay" checked> eBay</label>
+                        <label class="store-check"><input type="checkbox" name="tienda" class="filtro-tienda" value="AliExpress" checked> AliExpress</label>
+                        <label class="store-check"><input type="checkbox" name="tienda" class="filtro-tienda" value="Wallapop" checked> Wallapop</label>
+                        <label class="store-check"><input type="checkbox" name="tienda" class="filtro-tienda" value="Walmart" checked> Walmart</label>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="filtro-titulo">Precio (EUR)</div>
+                        <div class="d-flex gap-2 align-items-center mb-3">
+                            <input type="number" name="min" id="precio-min" class="price-input-modern" placeholder="Mínimo" min="0" step="0.01">
+                            <span class="text-muted fw-bold">-</span>
+                            <input type="number" name="max" id="precio-max" class="price-input-modern" placeholder="Máximo" min="0" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn-reset-filtros" id="btn-reset">&#10006; Limpiar filtros</button>
+                </div>
+            </div>
+
+            <!-- RESULTADOS Y GRID -->
+            <div class="col-lg-9">
+                {% if resultados %}
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3 bg-white p-3 rounded-4 shadow-sm border border-light">
+                    <h5 class="fw-bold m-0 text-dark">Resultados para "<span class="text-primary">{{ busqueda }}</span>" <span id="contador-resultados" class="badge bg-light text-secondary border ms-2"></span></h5>
+                    
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted fw-semibold" style="font-size: 0.9rem;">Ordenar:</span>
+                        <select name="orden" id="orden-select" class="sort-select">
+                            <option value="precio-asc">Precio: menor a mayor</option>
+                            <option value="precio-desc">Precio: mayor a menor</option>
+                            <option value="nombre-asc">Nombre: A → Z</option>
+                            <option value="nombre-desc">Nombre: Z → A</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Filtro por precio -->
-                <div class="col-md-4">
-                    <h6>&#128176; Rango de precio (EUR)</h6>
-                    <div class="price-inputs">
-                        <input type="number" name="min" id="precio-min" class="form-control" placeholder="Min" min="0"
-                            step="0.01">
-                        <span class="text-muted">—</span>
-                        <input type="number" name="max" id="precio-max" class="form-control" placeholder="Max" min="0"
-                            step="0.01">
+                <div class="row g-4" id="productos-grid">
+                    {% for item in resultados %}
+                    <div class="col-sm-6 col-md-6 col-xl-4 producto-card-wrapper" data-tienda="{{ item.tienda }}"
+                        data-precio="{{ item.precio|cut:' EUR'|cut:','|cut:'.' }}" data-precio-raw="{{ item.precio }}" data-precio-num="{{ item.precio_num }}"
+                        data-nombre="{{ item.nombre|lower }}">
+                        <div class="product-card">
+                            <div class="card-img-wrapper">
+                                {% if item.tienda == 'Amazon' %}<span class="store-badge-floating bg-amazon">Amazon</span>
+                                {% elif item.tienda == 'eBay' %}<span class="store-badge-floating bg-ebay">eBay</span>
+                                {% elif item.tienda == 'AliExpress' %}<span class="store-badge-floating bg-aliexpress">AliExpress</span>
+                                {% elif item.tienda == 'Walmart' %}<span class="store-badge-floating bg-walmart">Walmart</span>
+                                {% else %}<span class="store-badge-floating bg-wallapop">Wallapop</span>{% endif %}
+                                
+                                {% if user.is_authenticated %}
+                                <button class="fav-btn-floating btn-favorito" data-link="{{ item.link }}" style="color: {% if item.link in favoritos_links %}#ef4444{% else %}#cbd5e1{% endif %};">
+                                    &#10084;
+                                </button>
+                                {% endif %}
+                                
+                                <img src="{{ item.imagen }}" alt="Foto" loading="lazy">
+                            </div>
+                            <div class="card-content">
+                                <h3 class="price-tag">{{ item.precio }}</h3>
+                                <h5 class="product-title" title="{{ item.nombre }}">{{ item.nombre }}</h5>
+                                
+                                <div class="valoracion-cell text-muted fw-semibold mb-3 d-flex align-items-center gap-1" style="font-size: 0.85rem;" data-link="{{ item.link }}" data-tienda="{{ item.tienda }}">
+                                    {% if item.valoracion == "⏳ Cargando..." %}
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    <span class="fst-italic fw-normal">Consultando...</span>
+                                    {% else %}
+                                    {{ item.valoracion }}
+                                    {% endif %}
+                                </div>
+                                
+                                <a href="{{ item.link }}" target="_blank" class="btn-ver-oferta text-center text-decoration-none">Ver oferta &#128279;</a>
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
 
-                <!-- Ordenar + reset -->
-                <div class="col-md-4">
-                    <h6>&#128200; Ordenar por</h6>
-                    <select name="orden" id="orden-select" class="sort-select">
-                        <option value="precio-asc">Precio: menor a mayor</option>
-                        <option value="precio-desc">Precio: mayor a menor</option>
-                        <option value="nombre-asc">Nombre: A → Z</option>
-                        <option value="nombre-desc">Nombre: Z → A</option>
-                    </select>
-                    <button class="btn-reset-filtros mt-2" id="btn-reset">&#10006; Limpiar filtros</button>
+                <div class="no-results-filter text-center py-5 bg-white rounded-4 shadow-sm border mt-4" id="sin-resultados-filtro">
+                    <h2 style="font-size: 3.5rem;">&#128270;</h2>
+                    <h4 class="fw-bold mt-3">Ningún producto coincide</h4>
+                    <p class="text-muted fs-5">Prueba a cambiar el rango de precio o las tiendas seleccionadas.</p>
+                    <button type="button" class="btn btn-outline-primary mt-3 px-4 py-2 fw-bold rounded-pill" id="btn-reset2">Limpiar filtros</button>
                 </div>
+
+                {% elif busqueda %}
+                <div class="text-center py-5 bg-white shadow-sm border border-light" style="border-radius: 1.5rem; margin-top: 2rem;">
+                    <h1 style="font-size: 5rem;">&#128373;</h1>
+                    <h2 class="fw-bold mt-3">Vaya, no hemos encontrado nada</h2>
+                    <p class="text-muted fs-5">No hay resultados para "{{ busqueda }}". Intenta usar otras palabras clave.</p>
+                </div>
+                {% else %}
+                <div class="text-center py-5 mt-5">
+                    <h1 style="font-size: 6rem; opacity: 0.9;">&#128717;</h1>
+                    <h2 class="fw-bold mt-4 text-dark">&#191;Qu&#233; necesitas comprar hoy?</h2>
+                    <p class="text-muted fs-5 mt-3">Escribe el nombre de un producto arriba y nosotros encontraremos el precio m&#225;s bajo en toda la red.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </form>
+</div>
 
-    {% if resultados %}
-    <!-- Cabecera resultados -->
-    <div class="d-flex justify-content-between align-items-center mb-3 px-1">
-        <h5 class="fw-bold text-dark m-0">Resultados para "<span class="text-primary">{{ busqueda }}</span>"</h5>
-        <span id="contador-resultados" class="badge bg-secondary rounded-pill py-2 px-3 text-white"></span>
-    </div>
-
-    <!-- Grid de tarjetas (todas cargadas, filtradas por JS) -->
-    <div class="row g-4" id="productos-grid">
-        {% for item in resultados %}
-        <div class="col-md-4 producto-card-wrapper" data-tienda="{{ item.tienda }}"
-            data-precio="{{ item.precio|cut:' EUR'|cut:','|cut:'.' }}" data-precio-raw="{{ item.precio }}" data-precio-num="{{ item.precio_num }}"
-            data-nombre="{{ item.nombre|lower }}">
-            <div class="card h-100 product-card shadow-sm border-0">
-                <div class="card-img-container">
-                    <img src="{{ item.imagen }}" alt="Foto" loading="lazy">
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-2 d-flex justify-content-between align-items-center">
-                        <div>
-                            {% if item.tienda == 'Amazon' %}
-                            <span class="badge store-badge bg-amazon">Amazon</span>
-                            {% elif item.tienda == 'eBay' %}
-                            <span class="badge store-badge bg-ebay">eBay</span>
-                            {% elif item.tienda == 'AliExpress' %}
-                            <span class="badge store-badge bg-aliexpress">AliExpress</span>
-                            {% elif item.tienda == 'Walmart' %}
-                            <span class="badge store-badge bg-walmart">Walmart</span>
-                            {% else %}
-                            <span class="badge store-badge bg-wallapop">Wallapop</span>
-                            {% endif %}
-                        </div>
-                        {% if user.is_authenticated %}
-                        <button class="btn btn-light rounded-circle shadow-sm btn-favorito p-0"
-                            data-link="{{ item.link }}"
-                            style="width: 35px; height: 35px; border: 1px solid #e2e8f0; color: {% if item.link in favoritos_links %}#ef4444{% else %}#cbd5e1{% endif %}; font-size: 1.2rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; line-height: 1;"
-                            title="Favorito">
-                            &#10084;
-                        </button>
-                        {% endif %}
-                    </div>
-                    <h5 class="card-title text-dark fw-bold truncate-text-2-lines" title="{{ item.nombre }}">{{ item.nombre }}</h5>
-                    <div class="mt-auto pt-3 border-top">
-                        <h3 class="price-tag mb-1">{{ item.precio }}</h3>
-                        <div class="valoracion-cell text-muted fw-semibold mb-3" style="font-size: 0.85rem;"
-                            data-link="{{ item.link }}" data-tienda="{{ item.tienda }}">
-                            {% if item.valoracion == "⏳ Cargando..." %}
-                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                            <span class="ms-1 fst-italic fw-normal">Consultando...</span>
-                            {% else %}
-                            {{ item.valoracion }}
-                            {% endif %}
-                        </div>
-                        <a href="{{ item.link }}" target="_blank" class="btn btn-ver-oferta w-100 rounded-pill py-2">Ver
-                            oferta &#128279;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- Mensaje sin resultados por filtros -->
-    <div class="no-results-filter text-center py-5 bg-white rounded-3 shadow-sm" id="sin-resultados-filtro">
-        <h2 style="font-size: 3rem;">&#128270;</h2>
-        <h4 class="fw-bold mt-2">Ningún producto coincide con los filtros</h4>
-        <p class="text-muted">Prueba a cambiar el rango de precio o las tiendas seleccionadas.</p>
-        <button class="btn btn-outline-primary" id="btn-reset2">Limpiar filtros</button>
-    </div>
-
-    <!-- Paginación eliminada: mostramos todos los resultados con filtros JS -->
-
-    {% elif busqueda %}
-    <div class="text-center py-5 mt-4 bg-white shadow-sm" style="border-radius: 1rem;">
-        <h1 style="font-size: 5rem;">&#128373;</h1>
-        <h2 class="fw-bold mt-3">Vaya, no hemos encontrado nada</h2>
-        <p class="text-muted fs-5">No hay resultados para "{{ busqueda }}". Intenta usar otras palabras clave.</p>
-    </div>
-    {% else %}
-    <div class="text-center py-5 mt-4">
-        <h1 style="font-size: 5rem; opacity: 0.9;">&#128717;</h1>
-        <h2 class="fw-bold mt-3 text-dark">&#191;Qu&#233; necesitas comprar hoy?</h2>
-        <p class="text-muted fs-5">Escribe el nombre de un producto arriba y encontraremos el precio m&#225;s bajo.</p>
-        {% endif %}
-    </div>
-
-    <!-- Toast Notificación -->
-    <div id="toast-favorito"
-        class="toast align-items-center text-white border-0 position-fixed top-0 end-0 m-4 shadow-lg" role="alert"
-        aria-live="assertive" aria-atomic="true" style="z-index: 9999; display: none; min-width: 250px;">
-        <div class="d-flex">
-            <div class="toast-body fs-6 fw-bold text-center w-100" id="toast-favorito-msj">
-                ¡Añadido a favoritos!
-            </div>
+<!-- Toast Notificación -->
+<div id="toast-favorito"
+    class="toast align-items-center text-white border-0 position-fixed bottom-0 end-0 m-4 shadow-lg" role="alert"
+    aria-live="assertive" aria-atomic="true" style="z-index: 9999; display: none; min-width: 250px;">
+    <div class="d-flex">
+        <div class="toast-body fs-6 fw-bold text-center w-100" id="toast-favorito-msj">
+            ¡Añadido a favoritos!
         </div>
     </div>
+</div>
 
-    <script>
-        // =================== FILTROS ===================
-        const grid = document.getElementById('productos-grid');
-        const sinResultados = document.getElementById('sin-resultados-filtro');
-        const contador = document.getElementById('contador-resultados');
+<script>
+    // =================== FILTROS ===================
+    const grid = document.getElementById('productos-grid');
+    const sinResultados = document.getElementById('sin-resultados-filtro');
+    const contador = document.getElementById('contador-resultados');
 
-        function parsePrecio(card) {
-            return parseFloat(card.dataset.precioNum) || 0;
-        }
+    function parsePrecio(card) {
+        return parseFloat(card.dataset.precioNum) || 0;
+    }
 
-        function aplicarFiltros() {
-            const tiendasActivas = new Set(
-                [...document.querySelectorAll('.filtro-tienda:checked')].map(cb => cb.value)
-            );
-            const precioMin = parseFloat(document.getElementById('precio-min').value) || 0;
-            const precioMax = parseFloat(document.getElementById('precio-max').value) || Infinity;
-            const orden = document.getElementById('orden-select').value;
+    function aplicarFiltros() {
+        const tiendasActivas = new Set(
+            [...document.querySelectorAll('.filtro-tienda:checked')].map(cb => cb.value)
+        );
+        const precioMin = parseFloat(document.getElementById('precio-min').value) || 0;
+        const precioMax = parseFloat(document.getElementById('precio-max').value) || Infinity;
+        const orden = document.getElementById('orden-select').value;
 
-            const cards = [...document.querySelectorAll('.producto-card-wrapper')];
+        const cards = [...document.querySelectorAll('.producto-card-wrapper')];
 
-            // Filtrar
-            let visibles = cards.filter(card => {
-                const tienda = card.dataset.tienda;
-                const precio = parsePrecio(card);
-                const matchTienda = tiendasActivas.has(tienda);
-                const matchPrecio = precio >= precioMin && precio <= precioMax;
-                return matchTienda && matchPrecio;
-            });
-
-            // Ordenar
-            visibles.sort((a, b) => {
-                const pa = parsePrecio(a), pb = parsePrecio(b);
-                const na = a.dataset.nombre, nb = b.dataset.nombre;
-                if (orden === 'precio-asc') return pa - pb;
-                if (orden === 'precio-desc') return pb - pa;
-                if (orden === 'nombre-asc') return na.localeCompare(nb);
-                if (orden === 'nombre-desc') return nb.localeCompare(na);
-                return 0;
-            });
-
-            // Ocultar todos, luego mostrar visibles en orden
-            cards.forEach(c => { c.style.display = 'none'; });
-            visibles.forEach(c => { c.style.display = ''; grid.appendChild(c); });
-
-            // Contador y mensaje vacío
-            const total = visibles.length;
-            if (contador) contador.textContent = total + ' ofertas';
-            if (sinResultados) sinResultados.style.display = total === 0 ? 'block' : 'none';
-        }
-
-        function resetFiltros() {
-            document.querySelectorAll('.filtro-tienda').forEach(cb => cb.checked = true);
-            document.getElementById('precio-min').value = '';
-            document.getElementById('precio-max').value = '';
-            document.getElementById('orden-select').value = 'precio-asc';
-            aplicarFiltros();
-        }
-
-        // Eventos
-        document.querySelectorAll('.filtro-tienda').forEach(cb => cb.addEventListener('change', aplicarFiltros));
-        document.getElementById('precio-min')?.addEventListener('input', aplicarFiltros);
-        document.getElementById('precio-max')?.addEventListener('input', aplicarFiltros);
-        document.getElementById('orden-select')?.addEventListener('change', aplicarFiltros);
-        document.getElementById('btn-reset')?.addEventListener('click', resetFiltros);
-        document.getElementById('btn-reset2')?.addEventListener('click', resetFiltros);
-
-        // Arrancar con orden por precio asc
-
-        // Restaurar estado de filtros desde la URL si existen
-        function restoreFiltersFromUrl() {
-            const params = new URLSearchParams(window.location.search);
-            if (!params.has('q')) return; // No se ha buscado aún
-
-            if (params.getAll('tienda').length > 0) {
-                const tiendas = params.getAll('tienda');
-                document.querySelectorAll('.filtro-tienda').forEach(cb => {
-                    cb.checked = tiendas.includes(cb.value);
-                });
-            }
-            if (params.has('min') && params.get('min')) {
-                document.getElementById('precio-min').value = params.get('min');
-            }
-            if (params.has('max') && params.get('max')) {
-                document.getElementById('precio-max').value = params.get('max');
-            }
-            if (params.has('orden') && params.get('orden')) {
-                document.getElementById('orden-select').value = params.get('orden');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            restoreFiltersFromUrl();
-            aplicarFiltros();
+        // Filtrar
+        let visibles = cards.filter(card => {
+            const tienda = card.dataset.tienda;
+            const precio = parsePrecio(card);
+            const matchTienda = tiendasActivas.has(tienda);
+            const matchPrecio = precio >= precioMin && precio <= precioMax;
+            return matchTienda && matchPrecio;
         });
 
-
-        // =================== VALORACIONES WALLAPOP ===================
-        document.addEventListener("DOMContentLoaded", async function () {
-            const celdas = document.querySelectorAll('.valoracion-cell');
-            for (const celda of celdas) {
-                if (celda.dataset.tienda === 'Wallapop' && celda.innerText.includes('Consultando')) {
-                    try {
-                        const response = await fetch('/api/get-stars/?url=' + encodeURIComponent(celda.dataset.link));
-                        const data = await response.json();
-                        celda.innerHTML = '<span class="text-primary fw-bold">' + data.stars + '</span>';
-                    } catch (err) {
-                        celda.innerText = 'Sin datos';
-                    }
-                }
-            }
+        // Ordenar
+        visibles.sort((a, b) => {
+            const pa = parsePrecio(a), pb = parsePrecio(b);
+            const na = a.dataset.nombre, nb = b.dataset.nombre;
+            if (orden === 'precio-asc') return pa - pb;
+            if (orden === 'precio-desc') return pb - pa;
+            if (orden === 'nombre-asc') return na.localeCompare(nb);
+            if (orden === 'nombre-desc') return nb.localeCompare(na);
+            return 0;
         });
-        // =================== FAVORITOS ===================
-        const csrfToken = '{{ csrf_token }}'; // Django template tag
-        document.querySelectorAll('.btn-favorito').forEach(btn => {
-            btn.addEventListener('click', async function (e) {
-                e.preventDefault();
-                const link = this.dataset.link;
-                const originalColor = this.style.color;
 
-                // Optimistic UI
-                const isAdded = originalColor.includes('rgb(239, 68, 68)') || originalColor.includes('#ef4444');
-                this.style.color = isAdded ? '#cbd5e1' : '#ef4444';
-                this.style.transform = 'scale(1.2)';
-                setTimeout(() => this.style.transform = 'scale(1)', 200);
+        // Ocultar todos, luego mostrar visibles en orden
+        cards.forEach(c => { c.style.display = 'none'; });
+        visibles.forEach(c => { c.style.display = ''; grid.appendChild(c); });
 
+        // Contador y mensaje vacío
+        const total = visibles.length;
+        if (contador) contador.textContent = total + ' ofertas';
+        if (sinResultados) sinResultados.style.display = total === 0 ? 'block' : 'none';
+    }
+
+    function resetFiltros() {
+        document.querySelectorAll('.filtro-tienda').forEach(cb => cb.checked = true);
+        document.getElementById('precio-min').value = '';
+        document.getElementById('precio-max').value = '';
+        document.getElementById('orden-select').value = 'precio-asc';
+        aplicarFiltros();
+    }
+
+    // Eventos
+    document.querySelectorAll('.filtro-tienda').forEach(cb => cb.addEventListener('change', aplicarFiltros));
+    document.getElementById('precio-min')?.addEventListener('input', aplicarFiltros);
+    document.getElementById('precio-max')?.addEventListener('input', aplicarFiltros);
+    document.getElementById('orden-select')?.addEventListener('change', aplicarFiltros);
+    document.getElementById('btn-reset')?.addEventListener('click', resetFiltros);
+    document.getElementById('btn-reset2')?.addEventListener('click', resetFiltros);
+
+    // Arrancar con orden por precio asc
+
+    // Restaurar estado de filtros desde la URL si existen
+    function restoreFiltersFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        if (!params.has('q')) return; // No se ha buscado aún
+
+        if (params.getAll('tienda').length > 0) {
+            const tiendas = params.getAll('tienda');
+            document.querySelectorAll('.filtro-tienda').forEach(cb => {
+                cb.checked = tiendas.includes(cb.value);
+            });
+        }
+        if (params.has('min') && params.get('min')) {
+            document.getElementById('precio-min').value = params.get('min');
+        }
+        if (params.has('max') && params.get('max')) {
+            document.getElementById('precio-max').value = params.get('max');
+        }
+        if (params.has('orden') && params.get('orden')) {
+            document.getElementById('orden-select').value = params.get('orden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        restoreFiltersFromUrl();
+        aplicarFiltros();
+    });
+
+
+    // =================== VALORACIONES WALLAPOP ===================
+    document.addEventListener("DOMContentLoaded", async function () {
+        const celdas = document.querySelectorAll('.valoracion-cell');
+        for (const celda of celdas) {
+            if (celda.dataset.tienda === 'Wallapop' && celda.innerText.includes('Consultando')) {
                 try {
-                    const response = await fetch('/favoritos/toggle/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrfToken
-                        },
-                        body: JSON.stringify({ link: link })
-                    });
+                    const response = await fetch('/api/get-stars/?url=' + encodeURIComponent(celda.dataset.link));
                     const data = await response.json();
-
-                    function mostrarToast(mensaje, bgColor) {
-                        const toastEl = document.getElementById('toast-favorito');
-                        const toastMsj = document.getElementById('toast-favorito-msj');
-                        toastEl.className = `toast align-items-center text-white border-0 position-fixed bottom-0 end-0 m-4 shadow-lg ${bgColor}`;
-                        toastMsj.innerHTML = mensaje;
-                        toastEl.style.display = 'block';
-                        toastEl.classList.add('show');
-                        setTimeout(() => {
-                            toastEl.classList.remove('show');
-                            setTimeout(() => toastEl.style.display = 'none', 300);
-                        }, 3000);
-                    }
-
-                    if (data.status === 'added') {
-                        this.style.color = '#ef4444';
-                        mostrarToast("❤️ Guardado en tus Favoritos", "bg-success");
-                    } else if (data.status === 'removed') {
-                        this.style.color = '#cbd5e1';
-                        mostrarToast("💔 Eliminado de tus Favoritos", "bg-secondary");
-                    } else {
-                        this.style.color = originalColor;
-                        alert("Error: " + data.message);
-                    }
+                    celda.innerHTML = '<span class="text-primary fw-bold">' + data.stars + '</span>';
                 } catch (err) {
-                    this.style.color = originalColor;
-                    console.error(err);
+                    celda.innerText = 'Sin datos';
                 }
-            });
+            }
+        }
+    });
+    // =================== FAVORITOS ===================
+    const csrfToken = '{{ csrf_token }}'; // Django template tag
+    document.querySelectorAll('.btn-favorito').forEach(btn => {
+        btn.addEventListener('click', async function (e) {
+            e.preventDefault();
+            const link = this.dataset.link;
+            const originalColor = this.style.color;
+
+            // Optimistic UI
+            const isAdded = originalColor.includes('rgb(239, 68, 68)') || originalColor.includes('#ef4444');
+            this.style.color = isAdded ? '#cbd5e1' : '#ef4444';
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => this.style.transform = 'scale(1)', 200);
+
+            try {
+                const response = await fetch('/favoritos/toggle/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ link: link })
+                });
+                const data = await response.json();
+
+                function mostrarToast(mensaje, bgColor) {
+                    const toastEl = document.getElementById('toast-favorito');
+                    const toastMsj = document.getElementById('toast-favorito-msj');
+                    toastEl.className = `toast align-items-center text-white border-0 position-fixed bottom-0 end-0 m-4 shadow-lg ${bgColor}`;
+                    toastMsj.innerHTML = mensaje;
+                    toastEl.style.display = 'block';
+                    toastEl.classList.add('show');
+                    setTimeout(() => {
+                        toastEl.classList.remove('show');
+                        setTimeout(() => toastEl.style.display = 'none', 300);
+                    }, 3000);
+                }
+
+                if (data.status === 'added') {
+                    this.style.color = '#ef4444';
+                    mostrarToast("❤️ Guardado en tus Favoritos", "bg-success");
+                } else if (data.status === 'removed') {
+                    this.style.color = '#cbd5e1';
+                    mostrarToast("💔 Eliminado de tus Favoritos", "bg-secondary");
+                } else {
+                    this.style.color = originalColor;
+                    alert("Error: " + data.message);
+                }
+            } catch (err) {
+                this.style.color = originalColor;
+                console.error(err);
+            }
         });
-    </script>
-    {% endblock %}
+    });
+</script>
+{% endblock %}
