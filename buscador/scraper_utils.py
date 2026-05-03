@@ -6,11 +6,10 @@ def get_soup(url):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept-Language": "es-ES,es;q=0.9",
-        "Referer": "https://www.google.com/", # Simulamos que venimos de buscar en Google
+        "Referer": "https://www.google.com/",
     }
     
     try:
-        # Añadimos un pequeño retraso para no parecer tan bot
         response = requests.get(url, headers=headers, timeout=15)
         if response.status_code == 200:
             return BeautifulSoup(response.text, 'html.parser')
@@ -21,6 +20,7 @@ def get_soup(url):
         print(f"Error de conexión: {e}")
         return None
 
+# Convierte strings de precios con varios formatos y símbolos en un float numérico (ej: "1.200,50 EUR" -> 1200.5)
 def extraer_precio(item):
     precio_str = str(item.get('precio', 'Consultar'))
     if 'Consultar' in precio_str:
@@ -31,38 +31,27 @@ def extraer_precio(item):
     if not numeros: 
         return 999999.0
 
-    # Lógica para detectar miles vs decimales (Heurística europea/española)
-    # 1.200,50 -> Si hay ambos, el último es el decimal
     if '.' in numeros and ',' in numeros:
         if numeros.rfind(',') > numeros.rfind('.'):
-            # Formato 1.200,50 o 1.200.000,50
             numeros = numeros.replace('.', '').replace(',', '.')
         else:
-            # Formato 1,200.50
             numeros = numeros.replace(',', '').replace('.', '.')
     
-    # 1.200 -> Si solo hay punto, miramos cuántos dígitos siguen
     elif '.' in numeros:
-        # Si hay más de un punto, son separadores de miles: 1.000.000
         if numeros.count('.') > 1:
             numeros = numeros.replace('.', '')
         else:
             partes = numeros.split('.')
-            # Si después del último punto hay exactamente 3 dígitos, son miles (ej: 1.200 o 1.000.000)
             if len(partes[-1]) == 3:
                 numeros = numeros.replace('.', '')
             else:
-                # Caso ej: 12.50 -> decimal
                 pass
 
-    # 1,200 -> Si solo hay coma
     elif ',' in numeros:
-        # Si hay más de una coma, son miles: 1,000,000
         if numeros.count(',') > 1:
             numeros = numeros.replace(',', '')
         else:
             partes = numeros.split(',')
-            # Misma lógica que con el punto para el formato español
             if len(partes[1]) == 3:
                 numeros = numeros.replace(',', '')
             else:

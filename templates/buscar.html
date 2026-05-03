@@ -4,7 +4,6 @@
 <style>
     body { background-color: #f8fafc !important; }
 
-    /* Hero compacto */
     .hero-compact {
         background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
         border-radius: 1.5rem;
@@ -48,7 +47,6 @@
     }
     .search-btn:hover { background: #4f46e5; transform: translateY(-1px); }
 
-    /* Sidebar Filtros */
     .sidebar-filtros {
         background: white;
         border-radius: 1.25rem;
@@ -100,7 +98,6 @@
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     }
 
-    /* Select moderno */
     .sort-select {
         border-radius: 10px;
         border: 2px solid #e2e8f0;
@@ -136,7 +133,6 @@
         border-color: #cbd5e1;
     }
 
-    /* Tarjetas de Producto */
     .product-card {
         background: white;
         border-radius: 1.25rem;
@@ -254,7 +250,6 @@
 </style>
 
 <div class="container-fluid px-4 px-lg-5 mt-4 mb-5" style="max-width: 1600px;">
-    <!-- HERO COMPACTO -->
     <form method="GET" action="{% url 'home' %}" id="search-form">
         <div class="hero-compact shadow-lg">
             <div class="row align-items-center position-relative" style="z-index: 10;">
@@ -273,7 +268,6 @@
         </div>
 
         <div class="row gx-4 gx-xl-5">
-            <!-- SIDEBAR FILTROS -->
             <div class="col-lg-3 mb-4">
                 <div class="sidebar-filtros">
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -302,7 +296,6 @@
                 </div>
             </div>
 
-            <!-- RESULTADOS Y GRID -->
             <div class="col-lg-9">
                 {% if resultados %}
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3 bg-white p-3 rounded-4 shadow-sm border border-light">
@@ -397,7 +390,6 @@
 </div>
 
 <script>
-    // =================== FILTROS ===================
     const grid = document.getElementById('productos-grid');
     const sinResultados = document.getElementById('sin-resultados-filtro');
     const contador = document.getElementById('contador-resultados');
@@ -462,9 +454,6 @@
     document.getElementById('btn-reset')?.addEventListener('click', resetFiltros);
     document.getElementById('btn-reset2')?.addEventListener('click', resetFiltros);
 
-    // Arrancar con orden por precio asc
-
-    // Restaurar estado de filtros desde la URL si existen
     function restoreFiltersFromUrl() {
         const params = new URLSearchParams(window.location.search);
         if (!params.has('q')) return; // No se ha buscado aún
@@ -492,7 +481,6 @@
     });
 
 
-    // =================== VALORACIONES WALLAPOP ===================
     document.addEventListener("DOMContentLoaded", async function () {
         const celdas = document.querySelectorAll('.valoracion-cell');
         for (const celda of celdas) {
@@ -507,7 +495,6 @@
             }
         }
     });
-    // =================== FAVORITOS ===================
     const csrfToken = '{{ csrf_token }}'; // Django template tag
     document.querySelectorAll('.btn-favorito').forEach(btn => {
         btn.addEventListener('click', async function (e) {
@@ -515,7 +502,6 @@
             const link = this.dataset.link;
             const originalColor = this.style.color;
 
-            // Optimistic UI
             const isAdded = originalColor.includes('rgb(239, 68, 68)') || originalColor.includes('#ef4444');
             this.style.color = isAdded ? '#cbd5e1' : '#ef4444';
             this.style.transform = 'scale(1.2)';

@@ -13,13 +13,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 # ==========================================
-# 🔐 TUS CLAVES SECRETAS (API KEYS)
+# 🔐 CLAVES SECRETAS (API KEYS)
 # ==========================================
 import os
 
-EBAY_APP_ID = os.environ.get("EBAY_APP_ID", "PEGA_AQUI_TU_APP_ID")
-EBAY_CERT_ID = os.environ.get("EBAY_CERT_ID", "PEGA_AQUI_TU_CERT_ID")
-RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY", "PEGA_AQUI_TU_RAPIDAPI_KEY")
+EBAY_APP_ID = os.environ.get("EBAY_APP_ID", "")
+EBAY_CERT_ID = os.environ.get("EBAY_CERT_ID", "")
+RAPIDAPI_KEY = os.environ.get("RAPIDAPI_KEY", "")
 
 LIMITE_PRODUCTOS = 40
 
@@ -30,8 +30,9 @@ LOGO_WALLAPOP = "https://pbs.twimg.com/profile_images/1580889839447474177/2t2rX8
 LOGO_ALIEXPRESS = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Aliexpress_logo.svg/200px-Aliexpress_logo.svg.png"
 LOGO_WALMART = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Walmart_logo.svg/200px-Walmart_logo.svg.png"
 
+# Autenticación con OAuth2 de eBay usando Client Credentials Grant
 def obtener_token_ebay():
-    if EBAY_APP_ID == "PEGA_AQUI_TU_APP_ID": return None
+    if not EBAY_APP_ID or not EBAY_CERT_ID: return None
     url = "https://api.ebay.com/identity/v1/oauth2/token"
     credenciales = f"{EBAY_APP_ID}:{EBAY_CERT_ID}"
     credenciales_b64 = base64.b64encode(credenciales.encode()).decode()
@@ -48,6 +49,7 @@ def obtener_token_ebay():
         logger.error(f"Error obteniendo token de eBay: {e}")
         return None
 
+# Realiza una petición a la API oficial de eBay para obtener productos y precios
 def buscar_en_ebay(nombre_producto):
     token = obtener_token_ebay()
     if not token: return []
@@ -78,6 +80,7 @@ def buscar_en_ebay(nombre_producto):
         logger.error(f"Error buscando en eBay: {e}", exc_info=True)
     return resultados
 
+# Usa RapidAPI para extraer datos de Amazon evitando bloqueos de anti-scraping
 def buscar_amazon_por_api(nombre_producto):
     url = "https://real-time-amazon-data.p.rapidapi.com/search"
     querystring = {"query": nombre_producto, "page": "1", "country": "ES", "sort_by": "RELEVANCE"}
@@ -112,6 +115,7 @@ def buscar_amazon_por_api(nombre_producto):
         return resultados
     except: raise Exception("Error en API")
 
+# Instancia de navegador headless para raspar datos de sitios que bloquean peticiones HTTP simples
 def get_driver():
     options = Options()
     options.add_argument("--headless=new")
@@ -125,6 +129,7 @@ def get_driver():
     service = Service(ChromeDriverManager().install())
     return webdriver.Chrome(service=service, options=options)
 
+# Fallback usando Selenium para extraer datos directamente de la página si la API falla
 def buscar_amazon_por_robot(nombre_producto):
     driver = get_driver()
     url = f"https://www.amazon.es/s?k={nombre_producto.replace(' ', '+')}"
@@ -146,9 +151,6 @@ def buscar_amazon_por_robot(nombre_producto):
                     # Quitamos todos los puntos para que sea "1279" en vez de "1.279"
                     whole = price_whole.text.strip().replace('.', '')
                     fraction = price_fraction.text.strip() if price_fraction else "00"
-                    # El usuario pide que si no funciona nada, le quitemos el punto al precio de amazon.
-                    # Ya quitamos el punto de los miles arriba con replace('.', '')
-                    # Y separamos la parte fraccional con un PUNTO en lugar de COMA para garantizar compatibilidad total
                     precio = f"{whole}.{fraction} EUR"
                 else:
                     precio = "Consultar"
@@ -171,11 +173,13 @@ def buscar_amazon_por_robot(nombre_producto):
     finally: driver.quit()
     return resultados
 
+# Controlador principal para Amazon: intenta API primero y si falla o no hay clave, pasa al robot
 def buscar_en_amazon(nombre_producto):
-    if RAPIDAPI_KEY == "PEGA_AQUI_TU_RAPIDAPI_KEY": return buscar_amazon_por_robot(nombre_producto)
+    if not RAPIDAPI_KEY: return buscar_amazon_por_robot(nombre_producto)
     try: return buscar_amazon_por_api(nombre_producto)
     except: return buscar_amazon_por_robot(nombre_producto)
 
+# Extrae datos de Wallapop cargando la vista y haciendo scroll para obtener más elementos
 def buscar_en_wallapop(nombre_producto):
     driver = get_driver()
     url = f"https://es.wallapop.com/app/search?keywords={nombre_producto.replace(' ', '%20')}"
@@ -208,6 +212,7 @@ def buscar_en_wallapop(nombre_producto):
     finally: driver.quit()
     return resultados
 
+# Carga individualmente la página del producto para buscar la valoración del vendedor
 def obtener_estrellas_wallapop(url_producto):
     driver = get_driver()
     valoracion = "Particular"
@@ -225,8 +230,9 @@ def obtener_estrellas_wallapop(url_producto):
     finally: driver.quit()
     return valoracion
 
+# Consulta a RapidAPI para obtener productos de AliExpress
 def buscar_en_aliexpress(nombre_producto):
-    if RAPIDAPI_KEY == "PEGA_AQUI_TU_RAPIDAPI_KEY":
+    if not RAPIDAPI_KEY:
         logger.warning("RAPIDAPI_KEY no configurada. No se puede usar la API de AliExpress.")
         return []
 
@@ -254,7 +260,6 @@ def buscar_en_aliexpress(nombre_producto):
         response.raise_for_status()
         data = response.json()
 
-        # La respuesta puede venir en distintos campos según la API y el plan
         items = (
             data.get("result", {}).get("resultList", [])
             or data.get("result", {}).get("items", [])
@@ -265,14 +270,12 @@ def buscar_en_aliexpress(nombre_producto):
 
         for raw in items[:LIMITE_PRODUCTOS]:
             try:
-                # Algunas APIs envuelven el producto en un sub-objeto "item"
                 info = raw.get("item", raw)
 
                 nombre = (
                     info.get("title") or info.get("product_title") or "Producto AliExpress"
                 )[:80]
 
-                # Precio: probamos distintas rutas según la versión de la API
                 precio_raw = (
                     info.get("sku", {}).get("def", {}).get("promotionPrice")
                     or info.get("sku", {}).get("def", {}).get("price")
@@ -333,8 +336,9 @@ def buscar_en_aliexpress(nombre_producto):
 
     return resultados
 
+# Consulta a RapidAPI para obtener productos de Walmart
 def buscar_en_walmart(nombre_producto):
-    if RAPIDAPI_KEY == "PEGA_AQUI_TU_RAPIDAPI_KEY":
+    if not RAPIDAPI_KEY:
         logger.warning("RAPIDAPI_KEY no configurada. No se puede usar la API de Walmart.")
         return []
 

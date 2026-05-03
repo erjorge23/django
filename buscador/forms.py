@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-# --- FORMULARIO 1: EL BUSCADOR (Para buscar productos) ---
 class BusquedaProductoForm(forms.Form):
     nombre_producto = forms.CharField(
         label='',
@@ -13,20 +12,18 @@ class BusquedaProductoForm(forms.Form):
         })
     )
 
-# --- FORMULARIO 2: EL REGISTRO (Para crear usuarios nuevos) ---
 class RegistroForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email'] # Pedimos Usuario y Email
+        fields = ['username', 'email']
         labels = {
             'username': 'Nombre de usuario',
             'email': 'Correo electrónico',
         }
         help_texts = {
-            'username': None, # Esto borra el texto de ayuda molesto de Django
+            'username': None,
         }
 
-    # Esto añade el estilo de Bootstrap a las casillas automáticamente
     def __init__(self, *args, **kwargs):
         super(RegistroForm, self).__init__(*args, **kwargs)
         for field in self.fields:

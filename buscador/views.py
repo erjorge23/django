@@ -27,6 +27,7 @@ def signup(request):
         form = RegistroForm()
     return render(request, 'registration/signup.html', {'form': form})
 
+# Vista principal: gestiona la búsqueda paralela en múltiples tiendas y cachea resultados
 @login_required(login_url='login') 
 def home(request):
     form = BusquedaProductoForm()
@@ -112,6 +113,7 @@ def api_get_wallapop_stars(request):
         stars = obtener_estrellas_wallapop(url)
         cache.set(key, stars, 3600)
     return JsonResponse({'stars': stars})
+# API endpoint para marcar o desmarcar un producto de la lista de favoritos del usuario
 @login_required(login_url='login')
 @require_POST
 def toggle_favorito(request):
